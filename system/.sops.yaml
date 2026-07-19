@@ -1,0 +1,19 @@
+# .sops.yaml
+# SOPS configuration for secrets management
+# Generate a new age key with: age-keygen -o ~/.config/sops/age/keys.txt
+keys:
+  - &age age17zcgqs8yneywedahwrkneucttpz3megqtc6p8umjn5hcynz3eutsq7w8ru
+
+creation_rules:
+  - path_regex: secrets/secrets.yaml$
+    key_groups:
+      - age:
+          - *age
+  - path_regex: secrets/pia.age$
+    key_groups:
+      - age:
+          - *age
+  - path_regex: secrets/weather-api-key.age$
+    key_groups:
+      - age:
+          - *age
