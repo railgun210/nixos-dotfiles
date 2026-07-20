@@ -66,7 +66,7 @@
       nfu = "nix flake update --flake ${config.home.homeDirectory}/GitRepos/nixos-dotfiles";
       nsr = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/GitRepos/nixos-dotfiles#railgun";
       nrt = "sudo nixos-rebuild test --flake ${config.home.homeDirectory}/GitRepos/nixos-dotfiles#railgun";
-      hms = "home-manager switch --flake ${config.home.homeDirectory}/GitRepos/nixos-dotfiles#railgun-linux-desktop";
+      hms = "home-manager switch --flake ${config.home.homeDirectory}/GitRepos/nixos-dotfiles#railgun-linux-desktop --cores 0 -j auto";
 
       # System — do a full stack re-system + home-manager update + rebuild
       update = "cd ${config.home.homeDirectory}/GitRepos/nixos-dotfiles && nfu && nsr && hms";

@@ -9,11 +9,11 @@
         "nix-command"
         "flakes"
       ];
-      # Ryzen 5800X has 8 cores / 16 threads. Using 4 parallel builds
-      # with 8 cores each cuts rebuild times by ~3-4x vs the previous
-      # max-jobs=2/cores=2 which was bottlenecking every nixos-rebuild.
-      max-jobs = 4;
-      cores = 8;
+      # Ryzen 5800X has 8 cores / 16 threads.
+      # max-jobs=auto lets the daemon run up to 16 builds in parallel.
+      # cores=0 lets each build use all available cores.
+      max-jobs = "auto";
+      cores = 0;
       # Cachix binary cache for Doom Emacs
       substituters = [
         "https://doom-emacs-unstraightened.cachix.org"
