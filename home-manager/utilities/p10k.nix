@@ -31,7 +31,7 @@ in
 emulate -L zsh
 setopt typeset_silent extended_glob nomatch no_unset
 
-(( $#parameter_cache )) && {
+(( \${+parameter_cache} )) && {
   (( $+parameters[p9k_config_opts] )) || {
     typeset -g -a p9k_config_opts
     setopt \${p9k_config_opts[@]}
@@ -511,7 +511,7 @@ typeset -g POWERLEVEL9K_DISABLE_HOT_RELOAD=true
 
 typeset -g POWERLEVEL9K_CONFIG_FILE=\${(%):-%x}
 
-(( \${#p10k_config_opts} )) && setopt \${p10k_config_opts[@]}
+(( \${+p10k_config_opts} )) && setopt \${p10k_config_opts[@]}
 'builtin' 'unset' 'p10k_config_opts'
 ";
 }
