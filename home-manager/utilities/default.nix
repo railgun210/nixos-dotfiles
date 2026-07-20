@@ -13,7 +13,6 @@
     ./gaming.nix
     ./ghostty.nix
     ./kitty.nix
-    ./p10k.nix
     ./thunderbird.nix
     ./ssh.nix
     ./vscode.nix
