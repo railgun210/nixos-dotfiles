@@ -75,16 +75,6 @@
 
     # Init content
     initContent = ''
-      # Source Powerlevel10k config
-      # This way after you setup Powerlevel10k, you can just run `p10k configure` 
-      # and it will generate the config file for you without needing to modify this again.
-      source ~/.p10k.zsh
-      # Source the Powerlevel10k configuration file
-      if [[ -f "$HOME/.p10k.zsh" ]]; then
-        source "$HOME/.p10k.zsh"
-      fi
-
-
       # FZF configuration
       export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
       export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
