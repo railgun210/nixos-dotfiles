@@ -31,6 +31,7 @@
 
     # Special Purpose Fonts
     weather-icons
+    symbola
   ];
   fonts.fontconfig.allowBitmaps = true;
 }

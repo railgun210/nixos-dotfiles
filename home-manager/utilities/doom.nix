@@ -2,13 +2,7 @@
 # Doom Emacs via nix-doom-emacs-unstraightened
 { inputs, pkgs, ... }:
 let
-  aspellDicts = pkgs.buildEnv {
-    name = "aspell-dicts-merged";
-    paths = [
-      pkgs.aspellDicts.en
-      pkgs.aspellDicts.es
-    ];
-  };
+  aspellEnv = pkgs.aspellWithDicts (dicts: with dicts; [ en es ]);
 in
 {
   programs.doom-emacs = {
@@ -20,11 +14,9 @@ in
       fd
       git
       ispell
-      aspell
+      aspellEnv
     ];
   };
-
-  home.sessionVariables.ASPELL_CONF = "dict-dir ${aspellDicts}/lib/aspell";
 
   # Run emacs daemon on boot
   services.emacs.enable = true;
