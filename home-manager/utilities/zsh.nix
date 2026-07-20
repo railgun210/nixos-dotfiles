@@ -81,6 +81,9 @@
 
       # PATH additions
       export PATH="$HOME/.local/bin:$PATH"
+
+      # Powerlevel10k config (must come after theme is sourced above)
+      [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
     '';
   };
 
