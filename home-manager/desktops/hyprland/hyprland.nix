@@ -262,9 +262,10 @@ in
       # EDIT: Add/remove startup apps here. To add a new app:
       #   exec-once = /path/to/your/app
       exec-once = [
-        # Wallpaper daemon (same as sway: awww + waypaper)
-        "${pkgs.awww}/bin/awww-daemon"
-        "${pkgs.waypaper}/bin/waypaper --restore"
+        # Wallpaper is now managed by stylix (stylix.image in theming/stylix.nix).
+        # stylix will set the wallpaper and auto-generate a base16 color scheme from it.
+        # "${pkgs.awww}/bin/awww-daemon"
+        # "${pkgs.waypaper}/bin/waypaper --restore"
 
         # Dropbox client
         "${pkgs.maestral}/bin/maestral start"

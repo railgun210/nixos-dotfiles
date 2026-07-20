@@ -7,7 +7,13 @@
     stylix = {
       enable = true;
 
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/atelier-forest.yaml";
+      # Use a wallpaper from still_wallpapers to auto-generate a base16 color scheme.
+      # The color scheme is generated via a genetic algorithm from the wallpaper image.
+      # Mustache templates can also be used to generate custom theme files — see base16.nix docs.
+      image = ../wallpapers/still_wallpapers/bveqqcq4fo5h1.jpeg;
+
+      # base16Scheme is intentionally left unset so Stylix generates a color scheme from the wallpaper.
+      # base16Scheme = "${pkgs.base16-schemes}/share/themes/atelier-forest.yaml";
 
       polarity = "dark";
       opacity = {

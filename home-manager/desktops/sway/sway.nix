@@ -245,11 +245,13 @@ in
     smart_gaps on
     focus_follows_mouse no
 
-    exec ${pkgs.swaybg}/bin/swaybg -i ~/Wallpapers/still_wallpapers/bveqqcq4fo5h1.jpeg -m fill
+    # Wallpaper is now managed by stylix (stylix.image in theming/stylix.nix).
+    # stylix will set the wallpaper and auto-generate a base16 color scheme from it.
+    # exec ${pkgs.swaybg}/bin/swaybg -i ~/Wallpapers/still_wallpapers/bveqqcq4fo5h1.jpeg -m fill
     # awww daemon must be running before waypaper can set wallpapers
-    exec ${pkgs.awww}/bin/awww-daemon
+    # exec ${pkgs.awww}/bin/awww-daemon
     # Restore last wallpaper waypaper set (waypaper saves its choice to ~/.config/waypaper/config.ini)
-    exec ${pkgs.waypaper}/bin/waypaper --restore
+    # exec ${pkgs.waypaper}/bin/waypaper --restore
     exec ${pkgs.maestral}/bin/maestral start
     exec ${pkgs.swayidle}/bin/swayidle
     exec ${pkgs.autotiling}/bin/autotiling

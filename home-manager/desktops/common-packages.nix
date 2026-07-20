@@ -20,8 +20,9 @@
     kdePackages.kate
 
     # Wallpaper (awww + waypaper)
-    swaybg
-    waypaper
-    awww
+    # Commented out for now so stylix can set the wallpaper.
+    # swaybg
+    # waypaper
+    # awww
   ];
 }
