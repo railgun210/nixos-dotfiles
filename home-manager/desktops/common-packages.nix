@@ -1,7 +1,6 @@
 { pkgs, ... }:
-# Packages shared across all Wayland desktops (Hyprland + Sway).
-# Compositor-specific tools (hyprlock, hypridle, swaylock, swayidle)
-# live in their respective module files.
+# Packages shared across the desktop environment.
+# Compositor-specific tools (hyprlock, hypridle) live in their module files.
 {
   home.packages = with pkgs; [
     # Screenshot (grimshot works on any wlroots compositor)
@@ -21,7 +20,6 @@
 
     # Wallpaper (awww + waypaper)
     # Commented out for now so stylix can set the wallpaper.
-    # swaybg
     # waypaper
     # awww
   ];

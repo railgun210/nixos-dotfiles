@@ -12,20 +12,10 @@ let
       "⏼ Restart")   systemctl reboot ;;
       "󰤄 Suspend")   systemctl suspend ;;
       " Lock")
-        # Use the appropriate lock screen for the running compositor
-        if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
-          ${pkgs.hyprlock}/bin/hyprlock
-        else
-          ${pkgs.swaylock-effects}/bin/swaylock
-        fi
+        ${pkgs.hyprlock}/bin/hyprlock
         ;;
       "󰍃 Logout")
-        # Use the appropriate exit command for the running compositor
-        if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
-          hyprctl dispatch exit
-        else
-          swaymsg exit
-        fi
+        hyprctl dispatch exit
         ;;
     esac
   '';

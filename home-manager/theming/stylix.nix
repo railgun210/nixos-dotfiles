@@ -60,7 +60,6 @@
         kde.enable = true;
 
         waybar.enable = true;
-        swaylock.enable = true;
         hyprlock.enable = true;
         neovim.enable = false;
       };

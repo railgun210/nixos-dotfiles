@@ -85,8 +85,9 @@ in
     };
   };
 
-  # dunst is launched from sway's exec instead of systemd, because the systemd
-  # service starts before WAYLAND_DISPLAY is exported and hits start-limit-hit.
+  # dunst is launched from the compositor's exec instead of systemd, because
+  # the systemd service starts before WAYLAND_DISPLAY is exported and hits
+  # start-limit-hit.
   systemd.user.services.dunst = {
     Unit = {
       After = lib.mkForce [ ];

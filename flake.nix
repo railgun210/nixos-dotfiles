@@ -39,12 +39,6 @@
       flake = false;
     };
 
-    # COMPOSITOR ===============================================================
-    swayfx = {
-      url = "github:WillPower3309/swayfx";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # UTILITIES ================================================================
     chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
     pia = {
@@ -68,7 +62,6 @@
       nix-doom-emacs-unstraightened,
       chaotic,
       pia,
-      swayfx,
       ...
     }@inputs:
     let
@@ -93,18 +86,6 @@
               {
                 nixpkgs.overlays = [
                   overlay-unstable
-                  # Replace sway-unwrapped with SwayFX so the NixOS sway module
-                  # wraps the SwayFX binary, enabling blur/shadow/animation effects.
-                  (final: prev: {
-                    sway-unwrapped = inputs.swayfx.packages.${final.system}.swayfx-unwrapped-git;
-                  })
-                  # Replace xdg-desktop-portal-wlr with the git version from
-                  # Chaotic-Nyx. The wlr NixOS module has no 'package' option,
-                  # so the overlay is the only way to swap it without adding a
-                  # second portal instance (which causes symlink collisions).
-                  (final: prev: {
-                    xdg-desktop-portal-wlr = final.xdg-desktop-portal-wlr_git;
-                  })
                 ];
               }
             )
@@ -125,9 +106,6 @@
             inherit system;
             overlays = [
               overlay-unstable
-              (final: prev: {
-                sway-unwrapped = inputs.swayfx.packages.${final.system}.swayfx-unwrapped-git;
-              })
               nix-doom-emacs-unstraightened.overlays.default
               (final: prev: { cozette = inputs.cozette.packages.${system}.default; })
               (final: prev: {

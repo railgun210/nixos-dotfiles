@@ -4,7 +4,6 @@
 # These values are set in home.nix
 {
   imports = [
-    ./sway
     ./hyprland
     ./utilities
     ./common-packages.nix

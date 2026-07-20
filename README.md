@@ -6,8 +6,8 @@ Comprehensive NixOS flake configuration with home-manager for a complete Wayland
 
 This flake manages:
 - **System**: NixOS 25.11 with Lanzaboote (secure boot)
-- **Wayland Compositors**: Sway (SwayFX) + Hyprland (selectable at login)
-- **Bar**: Waybar (auto-detects active compositor)
+- **Wayland Compositor**: Hyprland
+- **Bar**: Waybar
 - **Launcher**: Bemenu
 - **Terminal**: Ghostty / Kitty
 - **Editor**: Doom Emacs (via nix-doom-emacs-unstraightened) + vanilla Neovim
@@ -16,41 +16,22 @@ This flake manages:
 - **Secrets**: SOPS-nix for WiFi passwords, SSH keys, and other secrets
 - **Gaming**: Gamescope, Gamemode, Lutris, Heroic, MangoHud
 
-## Desktops
-
-Two Wayland compositors are available — select either one at the SDDM login screen.
-
-### Sway (SwayFX)
-
-| Component | Choice |
-|-----------|--------|
-| Compositor | Sway (SwayFX — blur, shadows, animations) |
-| Bar | Waybar |
-| Launcher | Bemenu |
-| Lockscreen | Swaylock-effects |
-| Idle | Swayidle |
-| Wallpaper | awww + waypaper |
-| Screenshot | Grimshot |
-| Clipboard | Cliphist + wl-clipboard |
-
-### Hyprland
+## Desktop
 
 | Component | Choice |
 |-----------|--------|
 | Compositor | Hyprland (blur, shadows, animations) |
-| Bar | Waybar (shared with sway) |
-| Launcher | Bemenu (shared with sway) |
+| Bar | Waybar |
+| Launcher | Bemenu |
 | Lockscreen | Hyprlock |
 | Idle | Hypridle |
-| Wallpaper | awww + waypaper (shared with sway) |
-| Screenshot | Grimshot (shared with sway) |
-| Clipboard | Cliphist + wl-clipboard (shared with sway) |
-
-**Shared between both compositors**: Waybar, Bemenu, Dunst, screenshot tool, clipboard, all keybindings (emacs, anki, emoji, VPN), and all startup applications (except autotiling, which Hyprland handles natively). Shared compositor-agnostic packages live in `desktops/common-packages.nix`.
+| Wallpaper | stylix |
+| Screenshot | Grimshot |
+| Clipboard | Cliphist + wl-clipboard |
 
 ### Utilities
 
-Notifications: Dunst, Terminal: Ghostty/Kitty, Browser: Firefox, Editor: Doom Emacs + VSCode, Mail: Thunderbird, Spaced Rep: Anki, networkmanager-applet, blueman-applet, Maestral (Dropbox), PIA VPN.
+Notifications: Dunst, Terminal: Ghostty/Kitty, Browser: Floorp, Editor: Doom Emacs + VSCode, Mail: Thunderbird, Spaced Rep: Anki, networkmanager-applet, blueman-applet, Maestral (Dropbox), PIA VPN.
 
 ## Quick Start
 
@@ -65,8 +46,6 @@ sudo nixos-rebuild switch --flake .#railgun
 home-manager switch --flake .#railgun-linux-desktop
 ```
 
-Select "Sway" or "Hyprland" at the SDDM login screen. SDDM remembers your last choice.
-
 ## Structure
 
 ```
@@ -80,7 +59,7 @@ nixos-dotfiles/
 │   ├── gaming.nix                  # Gamescope, Gamemode, Lutris, Heroic, kernel tuning
 │   ├── audio.nix                   # PipeWire + pamixer, pavucontrol, playerctl
 │   ├── bluetooth.nix               # Bluetooth + MT7921 fixes
-│   ├── default-desktop.nix         # Sway, Hyprland, XDG portals, Wayland env vars
+│   ├── default-desktop.nix         # Hyprland, XDG portals, Wayland env vars
 │   ├── desktop-manager.nix         # SDDM with Rose Pine theme
 │   ├── fonts.nix                   # Nerd Fonts, Noto, Weather Icons (single source of truth)
 │   ├── locale.nix                  # Locale + timezone
@@ -110,14 +89,10 @@ nixos-dotfiles/
 │   ├── wallpapers/                 # Wallpaper assets
 │   └── desktops/                   # Desktop environment modules
 │       ├── common-packages.nix     # Shared compositor packages (grimshot, cliphist, etc.)
-│       ├── sway/
-│       │   ├── sway.nix            # Full Sway config + keybindings
-│       │   ├── swaylock.nix        # swaylock-effects with blur
-│       │   └── swayidle.nix        # Idle management (lock, dpms, suspend)
 │       ├── hyprland/
 │       │   ├── hyprland.nix        # Full Hyprland config + keybindings
 │       │   ├── hyprlock.nix        # Hyprlock lockscreen with stylix colors
-│       │   └── hypridle.nix        # Idle management (lock, dpms)
+│       │   └── hypridle.nix        # Idle management (lock, dpms, suspend)
 │       └── utilities/
 │           ├── bar/waybar.nix      # Waybar + custom modules
 │           └── bemenu/             # Launcher, powermenu, VPN selector
@@ -152,7 +127,7 @@ stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/atelier-forest-dark.y
 ```
 
 Colors are applied to:
-- Sway, Hyprland, Waybar, Bemenu, Swaylock, Hyprlock
+- Hyprland, Waybar, Bemenu, Hyprlock
 - GTK, Qt, Ghostty, Kitty, Firefox, VSCode, Anki
 
 Fonts are managed at system level (`system/fonts.nix`) with Stylix font preferences set in `theming/stylix.nix` and `theming/font-settings.nix`. Primary fonts: Terminess Nerd Font Mono (monospace), Overpass (sans), Cozette (status bars), Symbols Nerd Font Mono, Weather Icons.
@@ -179,8 +154,7 @@ The configuration includes a dedicated gaming module (`system/gaming.nix`) with:
 ### NVIDIA
 
 The RTX 4060 uses proprietary NVIDIA modules with:
-- Wayland/Sway modesetting enabled
-- Vulkan renderer (`WLR_RENDERER=vulkan`)
+- Wayland modesetting enabled
 - VA-API hardware video decode
 - 32-bit graphics support for Proton games
 

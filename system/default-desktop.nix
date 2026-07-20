@@ -4,32 +4,15 @@
   ...
 }:
 {
-  # Sway Wayland compositor — SwayFX (sway fork with blur, shadows, animations).
-  # The overlay in flake.nix replaces sway-unwrapped with swayfx-unwrapped-git,
-  # so the NixOS module wraps the SwayFX binary automatically.
-  programs.sway = {
-    enable = true;
-    xwayland.enable = true;
-    wrapperFeatures.gtk = true;
-    extraSessionCommands = ''
-      export XDG_SESSION_TYPE=wayland
-      export XDG_CURRENT_DESKTOP=sway
-    '';
-  };
-
   programs.dconf.enable = true;
 
-  # ── Hyprland ──────────────────────────────────────────────────────────────
-  # Enable Hyprland alongside Sway. Both are selectable at the SDDM login screen.
-  # programs.hyprland creates the .desktop file that SDDM uses for session selection.
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
   };
 
   # NOTE: defaultSession is intentionally removed so SDDM remembers
-  # whichever session you last selected. Both Sway and Hyprland will
-  # appear in the session dropdown on the login screen.
+  # whichever session you last selected.
 
   # ── XDG desktop portal ───────────────────────────────────────────────────────
 
@@ -37,18 +20,8 @@
 
   xdg.portal = {
     enable = true;
-    # Use xdg-desktop-portal-wlr-git from Chaotic-Nyx for the latest
-    # Wayland screen-capture, screenshot, and RemoteDesktop support.
-    # The wlr module has no 'package' option, so we override it via an
-    # overlay in flake.nix (see overlay-chaotic-packages).
-    wlr.enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     config = {
-      sway = {
-        "org.freedesktop.impl.portal.ScreenCast" = "wlr";
-        "org.freedesktop.impl.portal.Screenshot" = "wlr";
-        default = [ "gtk" ];
-      };
       hyprland = {
         "org.freedesktop.impl.portal.ScreenCast" = "hyprland";
         "org.freedesktop.impl.portal.Screenshot" = "hyprland";
@@ -114,15 +87,6 @@
     XCURSOR_THEME = "Adwaita";
     XCURSOR_SIZE = "16";
   };
-
-  # ── Wayland core packages from Chaotic-Nyx ──────────────────────────────────
-  #
-  # Using the git version of wayland from Chaotic-Nyx to stay aligned with the
-  # bleeding-edge SwayFX build. SwayFX bundles its own wlroots, so only the
-  # wayland library is needed here.
-  environment.systemPackages = with pkgs; [
-    wayland_git
-  ];
 
   # ── Wayland application compatibility ────────────────────────────────────────
 

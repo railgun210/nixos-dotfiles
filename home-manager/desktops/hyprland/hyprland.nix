@@ -12,8 +12,8 @@ let
 in
 {
   # ── Hyprland Compositor ───────────────────────────────────────────────────
-  # Main Hyprland configuration. Keybindings match sway as closely as possible.
-  # Colors come from stylix (atelier-forest base16) — same as sway.
+  # Main Hyprland configuration.
+  # Colors come from stylix (atelier-forest base16).
   # Every section has comments so you can manually edit the config.
   #
   # TO ADD A NEW KEYBINDING:
@@ -33,7 +33,7 @@ in
       "$modifier" = "SUPER";
 
       # ── Monitor / Scaling ──────────────────────────────────────────────────
-      # Fractional scaling at 1.6, matching sway's output scale.
+      # Fractional scaling at 1.6.
       # Format: name, resolution, position, scale
       # EDIT: Change "1.6" to adjust scaling. Use "1" for no scaling.
       monitor = ", preferred, auto, 1.6";
@@ -55,7 +55,6 @@ in
 
       # ── Decoration ─────────────────────────────────────────────────────────
       # Window decorations, blur, shadows, rounding.
-      # These match SwayFX's effects: blur passes 4, radius 7, corner radius 5.
       # EDIT: Change rounding for more/less round corners. Change blur passes/radius.
       decoration = {
         rounding = 5;
@@ -97,14 +96,14 @@ in
       };
 
       # ── Dwindle Layout ─────────────────────────────────────────────────────
-      # Dwindle is Hyprland's default tiling layout (similar to sway's i3 layout).
+      # Dwindle is Hyprland's default tiling layout.
       dwindle = {
         preserve_split = true;
         force_split = 2;
       };
 
       # ── Input ──────────────────────────────────────────────────────────────
-      # Keyboard layout and mouse settings. Matches sway's input config.
+      # Keyboard layout and mouse settings.
       # EDIT: Change xkb_layout to add/remove keyboard layouts.
       input = {
         kb_layout = "us,latam";
@@ -128,7 +127,6 @@ in
       # be expressed in the home-manager settings attrset. They use extraConfig below.
 
       # ── Keybindings ────────────────────────────────────────────────────────
-      # All sway keybindings ported to Hyprland format.
       # Format: bind = MODS, KEY, DISPATCHER, ARGS
       # MODS: SUPER, SHIFT, CTRL, ALT (can combine with ,)
       #
@@ -142,25 +140,25 @@ in
       #   movefocus, l/r/u/d    — move focus in direction
       #   movewindow, l/r/u/d   — move window in direction
       #   togglesplit           — toggle split direction in dwindle
-      #   togglegroup           — group/ungroup windows (like sway tabbed)
+      #   togglegroup           — group/ungroup windows
       #   exit                  — quit Hyprland
       #
       # To add a new keybind, copy an existing line and modify it.
 
-      # ── Window Focus (vim-style, matching sway) ──
+      # ── Window Focus (vim-style) ──
       bind = [
         "$modifier, j, movefocus, l"
         "$modifier, k, movefocus, d"
         "$modifier, l, movefocus, u"
         "$modifier, semicolon, movefocus, r"
 
-        # ── Window Move (matching sway) ──
+        # ── Window Move ──
         "$modifier SHIFT, j, movewindow, l"
         "$modifier SHIFT, k, movewindow, d"
         "$modifier SHIFT, l, movewindow, u"
         "$modifier SHIFT, semicolon, movewindow, r"
 
-        # ── Layout Controls (matching sway) ──
+        # ── Layout Controls ──
         # splith/splitv → layoutmsg togglesplit (Hyprland 0.54+ requires layoutmsg prefix)
         "$modifier, h, layoutmsg, togglesplit"
         "$modifier, v, layoutmsg, togglesplit"
@@ -169,13 +167,13 @@ in
         "$modifier SHIFT, space, focusurgentorlast"
         "$modifier, q, killactive"
 
-        # ── Layout Modes (matching sway) ──
-        # stacking/tabbed → togglegroup (Hyprland groups ≈ sway containers)
+        # ── Layout Modes ──
+        # stacking/tabbed → togglegroup
         "$modifier, s, togglegroup"
         "$modifier, w, lockactivegroup, toggle"
         "$modifier, e, layoutmsg, togglesplit"
 
-        # ── App Launchers (matching sway) ──
+        # ── App Launchers ──
         "$modifier, d, exec, ${bemenu-cmd}"
         "$modifier SHIFT, d, exec, window-switcher"
         "$modifier, t, exec, ${terminal}"
@@ -183,32 +181,31 @@ in
         "$modifier, b, exec, ${pkgs.floorp-bin}/bin/floorp"
         "$modifier SHIFT, e, exec, ${pkgs.thunar}/bin/thunar"
 
-        # ── Screenshot (matching sway — grimshot works on Hyprland) ──
+        # ── Screenshot (grimshot works on Hyprland) ──
         "$modifier SHIFT, s, exec, ${pkgs.sway-contrib.grimshot}/bin/grimshot copy area"
 
-        # ── Clipboard History (matching sway) ──
+        # ── Clipboard History ──
         "$modifier SHIFT, v, exec, cliphist list | ${pkgs.bemenu}/bin/bemenu -l 20 | cliphist decode | wl-copy"
 
-        # ── Lock & Power (matching sway) ──
-        # Lock uses hyprlock (Hyprland-native) instead of swaylock
+        # ── Lock & Power ──
         "$modifier, x, exec, ${pkgs.hyprlock}/bin/hyprlock"
         "$modifier SHIFT, x, exec, powermenu-bemenu"
 
-        # ── VPN (matching sway) ──
+        # ── VPN ──
         "CTRL ALT, p, exec, pia-selector"
 
         # ── Reload & Restart ──
-        # Reload: same as sway
+        # Reload: hyprctl reload
         "$modifier SHIFT, c, exec, hyprctl reload"
         # Restart: Hyprland has no restart command — exit and let SDDM relaunch
         "$modifier SHIFT, r, exec, hyprctl dispatch exit"
 
-        # ── Custom App Launchers (matching sway — Emacs, Anki, Emoji) ──
+        # ── Custom App Launchers (Emacs, Anki, Emoji) ──
         "CTRL ALT, z, exec, emacsclient -c -a emacs"
         "CTRL ALT, e, exec, bemoji"
         "CTRL ALT, a, exec, ${pkgs.anki-bin}/bin/anki"
 
-        # ── Workspace Switching (matching sway) ──
+        # ── Workspace Switching ──
         "$modifier, 1, workspace, 1"
         "$modifier, 2, workspace, 2"
         "$modifier, 3, workspace, 3"
@@ -220,7 +217,7 @@ in
         "$modifier, 9, workspace, 9"
         "$modifier, 0, workspace, 10"
 
-        # ── Move to Workspace (matching sway) ──
+        # ── Move to Workspace ──
         "$modifier SHIFT, 1, movetoworkspace, 1"
         "$modifier SHIFT, 2, movetoworkspace, 2"
         "$modifier SHIFT, 3, movetoworkspace, 3"
@@ -232,18 +229,18 @@ in
         "$modifier SHIFT, 9, movetoworkspace, 9"
         "$modifier SHIFT, 0, movetoworkspace, 10"
 
-        # ── Next/Prev Workspace (matching sway) ──
+        # ── Next/Prev Workspace ──
         "$modifier, Tab, workspace, +1"
         "$modifier SHIFT, Tab, workspace, -1"
         "$modifier, bracketright, workspace, +1"
         "$modifier, bracketleft, workspace, -1"
 
-        # ── Media Keys (matching sway) ──
+        # ── Media Keys ──
         ", XF86AudioRaiseVolume, exec, ${pkgs.pamixer}/bin/pamixer -i 5"
         ", XF86AudioLowerVolume, exec, ${pkgs.pamixer}/bin/pamixer -d 5"
         ", XF86AudioMute, exec, ${pkgs.pamixer}/bin/pamixer -t"
 
-        # ── Brightness Keys (matching sway) ──
+        # ── Brightness Keys ──
         ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl set +5%"
         ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl set 5%-"
       ];
@@ -255,7 +252,6 @@ in
       ];
 
       # ── Startup Applications ───────────────────────────────────────────────
-      # Same as sway, minus autotiling (Hyprland handles splits natively via dwindle).
       # exec-once = runs only once at Hyprland start
       # exec = runs on every config reload
       #
@@ -273,12 +269,16 @@ in
         # Status bar (waybar auto-detects hyprland)
         "${pkgs.waybar}/bin/waybar"
 
-        # Notification daemon (shared with sway)
+        # Notification daemon
         "${pkgs.dunst}/bin/dunst"
+
+        # Idle inhibitors
+        "${pkgs.wljoywake}/bin/wljoywake -t 10" # Inhibit idle on gamepad input
+        "${pkgs.wayland-pipewire-idle-inhibit}/bin/wayland-pipewire-idle-inhibit" # Inhibit idle on media playback
       ];
 
       # ── Default Workspace ──────────────────────────────────────────────────
-      # Opens on workspace 1 by default, matching sway.
+      # Opens on workspace 1 by default.
       workspace = [
         "w[t1]f[1], gapsout:0, gapsin:0"
       ];
@@ -291,7 +291,7 @@ in
     #       To add a layer rule, use: layerrule = effect, match:namespace <name>
     extraConfig = ''
       # ── Layer Rules (Waybar blur) ──
-      # Blur behind waybar — matches SwayFX's layer_effects config.
+      # Blur behind waybar.
       # Block format: layerrule { name = ..., match:namespace = ..., effect = value }
       layerrule {
         name = waybar-blur
@@ -325,7 +325,7 @@ in
         no_blur = true
       }
 
-      # Floating apps (matching sway's floating.criteria)
+      # Floating apps
       windowrule {
         name = pavucontrol-float
         match:class = ^(Pavucontrol)$
@@ -358,7 +358,7 @@ in
         float = true
       }
 
-      # Workspace assigns (matching sway's assigns)
+      # Workspace assigns
       windowrule {
         name = vlc-ws4
         match:class = ^(vlc)$

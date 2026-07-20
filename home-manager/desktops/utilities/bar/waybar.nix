@@ -54,8 +54,6 @@ in
         spacing = 0;
 
         modules-left = [
-          "sway/workspaces"
-          "sway/mode"
           "hyprland/workspaces"
         ];
 
@@ -70,28 +68,11 @@ in
           "bluetooth"
           "network"
           "pulseaudio"
+          "idle_inhibitor"
           "custom/system-temps"
           "custom/weather"
           "clock"
         ];
-
-        "sway/workspaces" = {
-          disable-scroll = true;
-          all-outputs = true;
-          format = "{icon}";
-          format-icons = {
-            "1" = "1";
-            "2" = "2";
-            "3" = "3";
-            "4" = "4";
-            "5" = "5";
-            "6" = "6";
-            "7" = "7";
-            "8" = "8";
-            "9" = "9";
-            "10" = "10";
-          };
-        };
 
         "hyprland/workspaces" = {
           format = "{icon}";

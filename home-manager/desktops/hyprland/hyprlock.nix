@@ -9,14 +9,12 @@ let
 in
 {
   # ── Hyprlock ──────────────────────────────────────────────────────────────
-  # Hyprland-native lock screen. Uses the same stylix base16 colors as swaylock
-  # for a consistent look. Lockscreen wallpaper is shared with the sway config.
+  # Hyprland-native lock screen. Uses stylix base16 colors.
   home.packages = [ pkgs.hyprlock ];
 
   xdg.configFile."hypr/hyprlock.conf".text = ''
     # ── Background ─────────────────────────────────────────────────────────
-    # Uses the same lockscreen wallpaper as sway.
-    # blur_passes = 3 makes the background blurry for aesthetics.
+    # Lockscreen wallpaper. blur_passes = 3 makes the background blurry.
     background {
       monitor =
       path = ~/Wallpapers/lockscreen_wallpapers/lock.jpeg
