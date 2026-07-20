@@ -85,14 +85,14 @@ in
       # EDIT: Change bezier curves or animation durations to taste.
       animations = {
         enabled = true;
-        bezier = "easeOutQuint, 0.23, 1, 0.32, 1";
+        bezier = "easeInOutExpo, 0.87, 0, 0.13, 1";
         animation = [
-          "windows, 1, 5, easeOutQuint"
-          "windowsOut, 1, 5, default, popin 80%"
+          "windows, 1, 5, easeInOutExpo"
+          "windowsOut, 1, 5, easeInOutExpo, popin 80%"
           "border, 1, 8, default"
           "borderangle, 1, 8, default"
           "fade, 1, 5, default"
-          "workspaces, 1, 6, default, slide"
+          "workspaces, 1, 6, default, slidefade 30%" # Slide fade gives you a cool slide effect
         ];
       };
 
