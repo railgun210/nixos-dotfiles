@@ -18,8 +18,7 @@ let
   keyboard-toggle = import ./scripts/keyboard-toggle.nix { inherit pkgs; };
   system-temps = import ./scripts/system-temps.nix { inherit pkgs; };
   weather = import ./scripts/weather.nix { inherit pkgs; };
-  # Now-playing media module — uses playerctl to show current track from any MPRIS player
-  now-playing = import ./scripts/now-playing.nix { inherit pkgs; };
+
 in
 {
   sops = {
@@ -40,7 +39,6 @@ in
     blueman
     wttrbar
     weather
-    now-playing
   ];
 
   programs.waybar = {
@@ -57,9 +55,9 @@ in
           "hyprland/workspaces"
         ];
 
-        # Center: now-playing media info — dead center, only module here
+        # Center: media info — built-in mpris module via playerctld
         modules-center = [
-          "custom/now-playing"
+          "mpris"
         ];
 
         modules-right = [
@@ -100,17 +98,29 @@ in
           format = "<span foreground='${dim}'>vpn</span> {text}";
         };
 
-        # Now-playing — /!\ This is the custom/now-playing module in modules-center
+        # Now-playing — built-in mpris module via playerctld
         # Displays current track from any MPRIS player (Firefox/YouTube, Strawberry, etc.)
-        # Uses playerctl polling every 2s. Click to play/pause.
-        # JSON fields: text=icon + track info, class=playing|paused
-        "custom/now-playing" = {
-          exec = "${now-playing}/bin/now-playing";
-          return-type = "json";
-          interval = 5;
-          exec-if = "${pkgs.playerctl}/bin/playerctl -l | ${pkgs.gnugrep}/bin/grep -q .";
-          format = "{text}";
-          on-click = "${pkgs.playerctl}/bin/playerctl play-pause";
+        # Uses libplayerctl natively — no polling, no exec scripts needed
+        "mpris" = {
+          format = "{player_icon} {dynamic}";
+          format-paused = "{player_icon} <i>{dynamic}</i>";
+          dynamic-len = 60;
+          dynamic-order = ["artist", "title", "album"];
+          tooltip-format = "{player} ({status})\n{artist} - {title}\n{album}";
+          player-icons = {
+            "firefox" = "󰈹";
+            "floorp" = "󰈹";
+            "chromium" = "󰊯";
+            "chrome" = "󰊯";
+            "strawberry" = "";
+            "vlc" = "";
+            "mpv" = "";
+            "default" = "";
+          };
+          status-icons = {
+            "paused" = "";
+          };
+          on-click = "play-pause";
         };
 
         "custom/weather" = {
@@ -301,7 +311,7 @@ in
       #custom-keyboard-layout,
       #custom-weather,
       #custom-system-temps,
-      #custom-now-playing,
+      #mpris,
       #memory,
       #clock,
       #network,
@@ -329,11 +339,11 @@ in
         min-width: 12px;
       }
 
-      #custom-now-playing {
+      #mpris {
         margin-right: 24px;
       }
 
-      #custom-now-playing.paused {
+      #mpris.paused {
         opacity: 0.5;
       }
 

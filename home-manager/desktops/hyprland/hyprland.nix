@@ -272,6 +272,9 @@ in
         # Notification daemon
         "${pkgs.dunst}/bin/dunst"
 
+        # Media player daemon (for waybar mpris module)
+        "${pkgs.playerctl}/bin/playerctld daemon"
+
         # Idle inhibitors
         "${pkgs.wljoywake}/bin/wljoywake -t 10" # Inhibit idle on gamepad input
         "${pkgs.wayland-pipewire-idle-inhibit}/bin/wayland-pipewire-idle-inhibit" # Inhibit idle on media playback
