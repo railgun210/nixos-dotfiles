@@ -29,6 +29,14 @@
       plugins = [
         "fetchart"
         "embedart"
+        "chroma"
+        "deezer"
+        "discogs"
+        "fromfilename"
+        "musicbrainz"
+        "mbpseudo"
+        "spotify"
+        "tidal"
       ];
 
       fetchart = {
