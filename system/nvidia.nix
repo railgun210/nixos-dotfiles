@@ -32,7 +32,7 @@
     # save/restore VRAM during sleep (required for high-memory GPUs).
     # finegrained enables RTD3 (Runtime D3) power management for Ada Lovelace.
     powerManagement.enable = true;
-    powerManagement.finegrained = true;
+    powerManagement.finegrained = false;
 
     package = pkgs.nvidia_cachyos;
   };

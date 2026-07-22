@@ -105,7 +105,7 @@ in
           format = "{player_icon} {dynamic}";
           format-paused = "{player_icon} <i>{dynamic}</i>";
           dynamic-len = 60;
-          dynamic-order = ["artist", "title", "album"];
+          dynamic-order = ["artist" "title" "album"];
           tooltip-format = "{player} ({status})\n{artist} - {title}\n{album}";
           player-icons = {
             "firefox" = "󰈹";
