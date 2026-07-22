@@ -28,6 +28,7 @@
     cozette.url = "github:railgun210/cozette";
     hm-ricing-mode.url = "github:Markus328/hm-ricing-mode/fix-hm-module";
     buuf-icon-theme.url = "github:railgun210/buuf-gnome";
+    greybird.url = "github:breitnw/Greybird/master";
 
     # EDITOR ===================================================================
     nix-doom-emacs-unstraightened = {
@@ -110,6 +111,10 @@
               (final: prev: { cozette = inputs.cozette.packages.${system}.default; })
               (final: prev: {
                 buuf-icon-theme = inputs.buuf-icon-theme.packages.${system}.default;
+              })
+              (final: prev: {
+                greybird-with-theme = colorScheme:
+                  inputs.greybird.packages.${system}.greybird-with-theme colorScheme;
               })
               (final: prev: { pia = inputs.pia.packages.${system}.pia; })
             ];

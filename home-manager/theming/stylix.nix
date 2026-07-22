@@ -43,7 +43,6 @@
 
       targets = {
         dunst.enable = false;
-        gtk.enable = true;
         gnome.enable = false;
         vesktop.enable = true;
 
@@ -65,7 +64,7 @@
       };
     };
 
-    # GTK icon theme (theme & font handled by stylix.targets.gtk)
+    # GTK icon theme (theme handled by greybird.nix)
     gtk = {
       enable = true;
       iconTheme = {

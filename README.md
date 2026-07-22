@@ -11,7 +11,7 @@ This flake manages:
 - **Launcher**: Bemenu
 - **Terminal**: Ghostty / Kitty
 - **Editor**: Doom Emacs (via nix-doom-emacs-unstraightened) + vanilla Neovim
-- **Theme System**: Stylix (base16 atelier-forest)
+- **Theme System**: Stylix (wallpaper-based) + Greybird GTK theme
 - **Notifications**: Dunst
 - **Secrets**: SOPS-nix for WiFi passwords, SSH keys, and other secrets
 - **Gaming**: Gamescope, Gamemode, Lutris, Heroic, MangoHud
@@ -72,6 +72,8 @@ nixos-dotfiles/
 ├── home-manager/                   # User-level config (home-manager)
 │   ├── home.nix                    # Main entry + session vars
 │   ├── theming/                    # Stylix, fonts, fastfetch
+│   │   ├── stylix.nix             # Stylix configuration
+│   │   ├── greybird.nix           # Greybird GTK theme with Stylix colors
 │   ├── utilities/                  # Apps and tools
 │   │   ├── common-packages.nix     # GUI + CLI packages
 │   │   ├── development-tools.nix   # Rust, Python, C/C++, Nix, LaTeX
@@ -118,17 +120,20 @@ Key details:
 
 A minimal Neovim installation (no plugins) is available for quick terminal edits. `EDITOR` and `VISUAL` are set to `emacsclient -a ''`.
 
-## Theme System (Stylix)
+## Theme System (Stylix + Greybird)
 
-Colors are managed via Stylix with the atelier-forest dark base16 scheme:
+Colors are managed via Stylix, which generates a base16 palette from the current wallpaper. The GTK theme is built using a [forked Greybird](https://github.com/breitnw/Greybird) that accepts custom accent colors:
 
 ```nix
-stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/atelier-forest-dark.yaml";
+stylix.image = ../wallpapers/still_wallpapers/wallhaven-1p5z29.jpg;
+# base16Scheme is intentionally left unset so Stylix generates from wallpaper
 ```
 
 Colors are applied to:
 - Hyprland, Waybar, Bemenu, Hyprlock
-- GTK, Qt, Ghostty, Kitty, Firefox, VSCode, Anki
+- GTK (Greybird theme), Qt, Ghostty, Kitty, Firefox, VSCode, Anki
+
+The Greybird theme is built dynamically with `home-manager/theming/greybird.nix`. See [docs/greybird-stylix.md](docs/greybird-stylix.md) for details.
 
 Fonts are managed at system level (`system/fonts.nix`) with Stylix font preferences set in `theming/stylix.nix` and `theming/font-settings.nix`. Primary fonts: Terminess Nerd Font Mono (monospace), Overpass (sans), Cozette (status bars), Symbols Nerd Font Mono, Weather Icons.
 
@@ -188,6 +193,7 @@ See [docs/secrets.md](docs/secrets.md) for setup instructions.
 | [docs/secrets.md](docs/secrets.md) | SOPS secrets setup and management |
 | [docs/base16-reference.md](docs/base16-reference.md) | Base16 color palette slot reference |
 | [docs/hyprland-animations.md](docs/hyprland-animations.md) | Hyprland animation system, bezier curves, and styles |
+| [docs/greybird-stylix.md](docs/greybird-stylix.md) | Greybird GTK theme + Stylix integration |
 
 ## Notes
 
