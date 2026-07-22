@@ -106,7 +106,7 @@ in
                   "D":         Delete,
                   "B":         ShowInfo,
               },
-              queue: (
+              queue: {
                   "D":       DeleteAll,
                   "<CR>":    Play,
                   "<C-s>":   Save,
@@ -114,7 +114,7 @@ in
                   "d":       Delete,
                   "C":       JumpToCurrent,
                   "X":       Shuffle,
-              ),
+              },
           ),
           search: (
               case_sensitive: false,
