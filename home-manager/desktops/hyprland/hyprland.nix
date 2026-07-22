@@ -368,11 +368,6 @@ in
         workspace = 4 silent
       }
       windowrule {
-        name = strawberry-ws5
-        match:class = ^(Strawberry)$
-        workspace = 5 silent
-      }
-      windowrule {
         name = steam-ws6
         match:class = ^(steam)$
         workspace = 6 silent

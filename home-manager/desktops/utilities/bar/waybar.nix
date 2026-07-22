@@ -112,7 +112,7 @@ in
             "floorp" = "󰈹";
             "chromium" = "󰊯";
             "chrome" = "󰊯";
-            "strawberry" = "";
+            "mpd" = "";
             "vlc" = "";
             "mpv" = "";
             "default" = "";

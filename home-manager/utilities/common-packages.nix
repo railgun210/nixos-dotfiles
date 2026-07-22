@@ -16,7 +16,6 @@
     picard # Music metadata editor
     prismlauncher # Minecraft launcher
     vlc # Media player
-    strawberry # Music player
     qbittorrent # Torrent client
     font-manager # Manually select bitmaps for special fonts
     maestral # FOSS Dropbox CLI
