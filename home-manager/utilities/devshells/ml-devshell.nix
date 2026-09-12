@@ -11,16 +11,17 @@
 #   $ jupyter lab          # start JupyterLab
 #   $ exit
 #   (returns to normal shell)
-{pkgs, ...}: let
-  mlPython = pkgs.python312.withPackages (ps:
-    with ps; [
+{ pkgs, ... }:
+let
+  mlPython = pkgs.python312.withPackages (
+    ps: with ps; [
       # Core data science
       numpy
       pandas
       scipy
 
       # Machine learning
-      scikitlearn
+      scikit-learn
 
       # Visualization
       matplotlib
@@ -35,12 +36,14 @@
       # Utilities
       black
       pip
-    ]);
+    ]
+  );
 
   mlDevShell = pkgs.mkShell {
-    packages = [mlPython];
+    packages = [ mlPython ];
   };
-in {
+in
+{
   # Install globally so `jupyter-lab` is on PATH for xdg-open / MIME association.
   home.packages = [
     mlPython

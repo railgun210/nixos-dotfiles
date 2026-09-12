@@ -2,11 +2,11 @@
 # System-level Stylix: themes the ReGreet login greeter with the desktop wallpaper.
 # This is the single source of truth for the wallpaper. Integrated Home Manager
 # inherits `stylix.image` through its `osConfig` argument.
-{pkgs, ...}: {
+{ pkgs, ... }: {
   stylix = {
     enable = true;
 
-    image = ../home-manager/wallpapers/still_wallpapers/wallhaven-zpxjjo.jpg;
+    image = ../home-manager/wallpapers/still_wallpapers/wallhaven-gpwlg7.jpg;
     # values: "center", "stretch", "fill", "fit", "tile"
     imageScalingMode = "fit";
 

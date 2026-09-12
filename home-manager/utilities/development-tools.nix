@@ -7,10 +7,6 @@
     cargo
     rustc
 
-    # Python
-    python3
-    python312Packages.pip
-    python312Packages.virtualenv
     uv # Fast Python package manager
     ruff # Python linter
 
