@@ -12,14 +12,13 @@
     hash = "sha256-u2gvNxDQJLIWIKF+HhyqQJVfTAZFvzHlwno7wqNXwhA=";
   };
 
-  turbo-c-theme = pkgs.vscode-utils.extensionFromVscodeMarketplace {
-    name = "turboc-3-0-theme";
-    publisher = "WatkinsLabs";
-    version = "0.0.1";
-    hash = "sha256-cjQxQr1Yt1twcuTFpQ6ZPDrC4mLGLa+inCnH36dPGm8=";
+  everforest-theme = pkgs.vscode-utils.extensionFromVscodeMarketplace {
+    name = "everforest";
+    publisher = "sainnhe";
+    version = "0.3.0";
+    hash = "sha256-nZirzVvM160ZTpBLTimL2X75sIGy5j2LQOok7a2Yc7U=";
   };
 in {
-  # Force VS Code (and all Electron apps) to use the native Wayland backend
   home.sessionVariables = {
     NIXOS_OZONE_WL = "1";
   };
@@ -79,11 +78,10 @@ in {
           njpwerner.autodocstring
           shd101wyy.markdown-preview-enhanced
         ]
-        ++ [ellsp turbo-c-theme];
+        ++ [ellsp everforest-theme];
 
       userSettings = {
-        # Theme — Turbo C 3.0, set explicitly instead of Stylix's generated theme
-        "workbench.colorTheme" = "Turbo C 3.0 Theme";
+        "workbench.colorTheme" = "Everforest Dark";
 
         # Window
         "window.newWindowDimensions" = "default";
