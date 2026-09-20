@@ -23,16 +23,7 @@
     hm-ricing-mode.url = "github:Markus328/hm-ricing-mode/fix-hm-module";
     buuf-icon-theme.url = "github:railgun210/buuf-gnome";
 
-    # EDITOR ===================================================================
-    nix-doom-emacs-unstraightened = {
-      url = "github:marienz/nix-doom-emacs-unstraightened";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    doomdir = {
-      url = "github:railgun210/doom-emacs";
-      flake = false;
-    };
-  };
+};
 
   outputs =
     {
@@ -44,7 +35,6 @@
       cozette,
       buuf-icon-theme,
       hm-ricing-mode,
-      nix-doom-emacs-unstraightened,
       ...
     }@inputs:
     let
@@ -52,7 +42,6 @@
       pkgs = import nixpkgs {
         inherit system;
         overlays = [
-          nix-doom-emacs-unstraightened.overlays.default
           (final: prev: { cozette = inputs.cozette.packages.${system}.default; })
           (final: prev: {
             buuf-icon-theme = inputs.buuf-icon-theme.packages.${system}.default;
@@ -68,7 +57,6 @@
         inherit pkgs;
         extraSpecialArgs = { inherit inputs; };
         modules = [
-          nix-doom-emacs-unstraightened.homeModule
           hm-ricing-mode.homeManagerModules.hm-ricing-mode
           sops-nix.homeManagerModules.sops
           stylix.homeManagerModules.stylix
