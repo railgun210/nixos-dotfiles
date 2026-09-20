@@ -21,7 +21,7 @@ command. MATE itself is installed and configured manually through Debian.
 | Browser | Floorp (Firefox fork) |
 | Theme engine | Stylix — generates color scheme from wallpaper, applies to terminals, Qt apps, Anki, etc. |
 | Fonts | Terminess Nerd Font (mono), Overpass Nerd Font (sans), Tinos Nerd Font (serif) |
-| Notifications | Dunst |
+| Notifications | MATE notification daemon (system) |
 | Email | Thunderbird |
 | Dev tools | Rust, Python (uv), Node, C/C++, Nix LSP, Docker |
 | Secrets | SOPS-nix (encrypted with age) |
@@ -45,29 +45,23 @@ command. MATE itself is installed and configured manually through Debian.
 
 ## Quick start
 
-See **[docs/debian-setup.md](docs/debian-setup.md)** for the full walkthrough.
-The short version:
+Run the interactive bootstrap script — it handles everything from Nix installation
+through the first `home-manager switch`:
 
 ```bash
-# 1. Install nix
-sh <(curl -L https://nixos.org/nix/install) --daemon
-
-# 2. Enable flakes
-echo "experimental-features = nix command flakes" >> ~/.config/nix/nix.conf
-
-# 3. Set up age key at /etc/sops/age/keys.txt (see docs/secrets.md)
-
-# 4. Clone and apply
 git clone https://github.com/railgun210/nixos-dotfiles ~/GitRepos/nixos-dotfiles
 cd ~/GitRepos/nixos-dotfiles && git checkout Debian
-nix run home-manager/release-25.11 -- switch --flake .#railgun
-
-# 5. Set zsh as default shell
-echo "$HOME/.nix-profile/bin/zsh" | sudo tee -a /etc/shells
-chsh -s "$HOME/.nix-profile/bin/zsh"
+bash scripts/bootstrap.sh
 ```
 
-After the initial `switch`, subsequent rebuilds use:
+The script will prompt you for your **sops age private key** (needed to decrypt
+secrets) and walk through each step with clear output. It is idempotent — safe to
+re-run if something fails partway through.
+
+See **[docs/debian-setup.md](docs/debian-setup.md)** for the full manual walkthrough
+and **[docs/secrets.md](docs/secrets.md)** for age key setup details.
+
+After the initial switch, subsequent rebuilds use:
 
 ```bash
 home-manager switch --flake ~/GitRepos/nixos-dotfiles#railgun
@@ -80,6 +74,8 @@ home-manager switch --flake ~/GitRepos/nixos-dotfiles#railgun
 ```
 nixos-dotfiles/
 ├── flake.nix                       # Standalone home-manager flake
+├── scripts/
+│   └── bootstrap.sh                # Interactive Debian Trixie setup script
 ├── secrets/                        # SOPS-encrypted secrets (age keys)
 │   ├── secrets.yaml                # RetroAchievements + Anki credentials
 │   ├── github-ssh-key.age          # SSH private key
@@ -103,16 +99,15 @@ nixos-dotfiles/
     │   │   ├── ml-devshell.nix     # numpy, pandas, sklearn, jupyterlab (`ml-dev`)
     │   │   ├── python-devshell.nix
     │   │   └── rust-devshell.nix
-    │   ├── doom.nix                # Doom Emacs via nix-doom-emacs-unstraightened
+    │   ├── doom.nix                # Installs plain emacs (Doom managed manually)
     │   ├── ghostty.nix             # Primary terminal
     │   ├── kitty.nix               # Backup terminal
     │   ├── floorp.nix              # Floorp browser config
-    │   ├── vscode.nix              # VSCode with extensions
+    │   ├── vscode.nix              # VSCode with Everforest Dark theme
     │   ├── thunderbird.nix         # Email client
     │   ├── anki.nix                # Spaced repetition + AnkiWeb sync (via sops)
     │   ├── retroarch.nix           # RetroArch emulation + RetroAchievements
     │   ├── borg-backup.nix         # Automated backups
-    │   ├── dunst.nix               # Notification daemon
     │   ├── ssh.nix                 # SSH config + sops-managed GitHub key
     │   └── zsh.nix                 # Zsh shell + Powerlevel10k
     │
@@ -127,11 +122,10 @@ nixos-dotfiles/
 
 ### Doom Emacs
 
-Managed via [nix-doom-emacs-unstraightened](https://github.com/marienz/nix-doom-emacs-unstraightened),
-which builds Doom from Nix — no separate `doom sync` needed. The Doom config
-lives in [railgun210/doom-emacs](https://github.com/railgun210/doom-emacs) and
-is pulled as a flake input. Fast builds come from the
-[nix-doom-emacs-unstraightened Cachix cache](https://app.cachix.org/cache/doom-emacs-unstraightened).
+Nix installs the `emacs` package; Doom itself is managed manually. Clone the
+config from [railgun210/doom-emacs](https://github.com/railgun210/doom-emacs)
+(use the `debian` branch) and run `doom sync` after cloning. This keeps Doom
+upgrades and package management under Doom's own control rather than Nix.
 
 ### Vanilla Neovim
 
@@ -156,7 +150,7 @@ Fonts are also declared in `stylix.nix`:
 | Serif | Tinos Nerd Font |
 | Emoji | Noto Color Emoji |
 
-VSCode uses the [Turbo C 3.0](https://marketplace.visualstudio.com/items?itemName=WatkinsLabs.turboc-3-0-theme)
+VSCode uses the [Everforest Dark](https://marketplace.visualstudio.com/items?itemName=sainnhe.everforest)
 theme and is excluded from Stylix.
 
 ---
