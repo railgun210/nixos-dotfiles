@@ -16,7 +16,7 @@
     name = "everforest";
     publisher = "sainnhe";
     version = "0.3.0";
-    hash = "sha256-nZirzVvM160ZTpBLTimL2X75sIGy5j2LQOok7a2Yc7U=";
+    hash = "sha256-nZirzVvM160ZTpBLTimL2X35sIGy5j2LQOok7a2Yc7U=";
   };
 in {
   home.sessionVariables = {
