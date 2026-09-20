@@ -10,14 +10,8 @@
     profiles.default = {
       settings = {
         # ── WebRender / GPU compositing ────────────────────────────────────────
-        #
-        # NOTE: gfx.webrender.compositor is deliberately DISABLED on NVIDIA+Wayland
-        # because it causes flickering, black popups, and rendering corruption with
-        # the proprietary driver. WebRender itself (gfx.webrender.all) works fine.
 
         "gfx.webrender.all" = true;
-        "gfx.webrender.compositor" = false;
-        "gfx.webrender.compositor.force-enabled" = false;
         "gfx.webrender.renderer" = "opengl";
         "layers.gpu-process.enabled" = true;
         "layers.gpu-process.force-enabled" = true;
@@ -47,11 +41,6 @@
 
         "browser.sessionstore.interval" = 60000;
         "browser.sessionstore.max_resumed_crashes" = 0;
-
-        # ── Wayland ───────────────────────────────────────────────────────────
-
-        "widget.wayland.fractional-scale.enabled" = true;
-        "widget.wayland-native.enabled" = true;
 
         # ── Misc ───────────────────────────────────────────────────────────────
 

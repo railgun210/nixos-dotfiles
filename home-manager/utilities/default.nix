@@ -4,7 +4,6 @@
   imports = [
     ./anki.nix
     ./default-apps.nix
-    ./dunst.nix
     ./borg-backup.nix
     ./common-packages.nix
     ./devshells

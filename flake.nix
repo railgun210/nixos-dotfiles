@@ -10,7 +10,9 @@
 
     # SECRETS ==================================================================
     sops-nix = {
-      url = "github:Mic92/sops-nix";
+      # Pinned to last commit compatible with Go 1.25 (nixpkgs 25.11).
+      # Newer sops-nix requires Go 1.26 which 25.11 does not ship.
+      url = "github:Mic92/sops-nix/13616fff713a9f94055c66f15687ebdc17a335df";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

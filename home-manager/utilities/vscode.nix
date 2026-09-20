@@ -19,10 +19,6 @@
     hash = "sha256-nZirzVvM160ZTpBLTimL2X35sIGy5j2LQOok7a2Yc7U=";
   };
 in {
-  home.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-  };
-
   programs.vscode = {
     enable = true;
 
