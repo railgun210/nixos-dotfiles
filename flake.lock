@@ -196,11 +196,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789214507,
-        "narHash": "sha256-blKWyXtovWzVKizemEffx7OiRk6CFVHCVGlWaHeOD9U=",
+        "lastModified": 1789650407,
+        "narHash": "sha256-TeI6bJI/AOaIG2Q0u9emJRt5EkWD0vwp9pVC2/yJMTs=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "650c68f5a631587030933a1ae60cc8708279a634",
+        "rev": "74cb2e9f130bba564295453b8a19eef53af202c5",
         "type": "github"
       },
       "original": {
@@ -462,11 +462,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789215203,
-        "narHash": "sha256-U8uqyuu5++ZFxmTHwriKUuDoZYe8H8O7s+Yn8rGQNTA=",
+        "lastModified": 1789652086,
+        "narHash": "sha256-ahJwpWGVcDCBJww19NfoWXFnndu/5AMZY0EmRFYLBuQ=",
         "owner": "marienz",
         "repo": "nix-doom-emacs-unstraightened",
-        "rev": "de1f6b1a249f9fa8217849b9be0789113efee353",
+        "rev": "bca556e47645c69b6885017184987fffab09ae9e",
         "type": "github"
       },
       "original": {
@@ -674,6 +674,7 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
+        "rev": "13616fff713a9f94055c66f15687ebdc17a335df",
         "type": "github"
       }
     },
@@ -896,11 +897,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787564401,
-        "narHash": "sha256-AsH+jSqoIPf/HNOduKMVkgxuY00TIG7OfsTWN1JMjcs=",
+        "lastModified": 1789407052,
+        "narHash": "sha256-eSUFY+u9Xq9/i/0/OH5JhVzTvG+eiOEvUErAmfBzaBE=",
         "owner": "winapps-org",
         "repo": "winapps",
-        "rev": "1b38cab1b8c1a513e4a313931759ac4942473678",
+        "rev": "42c7e8318280c6fc3426c7afebfc7f43b895f4c8",
         "type": "github"
       },
       "original": {
