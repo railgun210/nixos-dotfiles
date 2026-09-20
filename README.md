@@ -92,7 +92,7 @@ nixos-dotfiles/
     │
     ├── utilities/                  # User applications and CLI tools
     │   ├── common-packages.nix     # Main app list (gimp, vlc, bat, eza, lazygit, etc.)
-    │   ├── default-apps.nix        # XDG MIME associations (Office formats → LibreOffice)
+    │   ├── default-apps.nix        # XDG MIME associations (Office formats → apt LibreOffice)
     │   ├── development-tools.nix   # Rust, Python, C/C++, Nix LSP
     │   ├── devshells/              # Isolated dev environments (`nix develop`)
     │   │   ├── c-general-devshell.nix

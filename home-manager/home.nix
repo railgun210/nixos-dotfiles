@@ -15,7 +15,18 @@
 
   config = {
     # Required for standalone home-manager on non-NixOS systems.
-    targets.genericLinux.enable = true;
+    targets.genericLinux = {
+      enable = true;
+      # Expose Debian's NVIDIA driver to Nix-built GL/Vulkan apps (ghostty,
+      # RetroArch, ...). Version MUST match Debian's nvidia-driver package.
+      # After switching (and after any version bump), run the sudo command that
+      # `home-manager switch` prints: sudo /nix/store/...-non-nixos-gpu/bin/non-nixos-gpu-setup
+      gpu.nvidia = {
+        enable = true;
+        version = "550.163.01";
+        sha256 = "sha256-74FJ9bNFlUYBRen7+C08ku5Gc1uFYGeqlIh7l1yrmi4=";
+      };
+    };
 
     home = {
       username = "railgun";
@@ -36,6 +47,14 @@
     };
 
     programs.home-manager.enable = true;
+
+    # Git identity. Written as a plain config file (not programs.git) because
+    # git itself comes from apt on Debian; programs.git would install a second copy.
+    xdg.configFile."git/config".text = ''
+      [user]
+        name = railgun210
+        email = aday56709@gmail.com
+    '';
 
     # Vanilla neovim (no plugins, for quick terminal edits)
     programs.neovim = {

@@ -22,15 +22,19 @@ sudo apt update && sudo apt upgrade -y
 
 ## 2. Install NVIDIA drivers (if applicable)
 
-Add non-free and contrib to your sources list, then:
+On Debian 13 (Trixie) the installer only enables `non-free-firmware`, so
+`nvidia-driver` shows "has no installation candidate" until you also enable
+`contrib` and `non-free` in `/etc/apt/sources.list`:
 
 ```bash
-sudo apt install nvidia-driver firmware-misc-nonfree
+sudo sed -i -E '/^deb/ s/ main non-free-firmware$/ main contrib non-free non-free-firmware/' /etc/apt/sources.list
+sudo apt update
+sudo apt install linux-headers-amd64 nvidia-driver firmware-misc-nonfree
 sudo reboot
 ```
 
-For Debian 12+, the `nvidia-driver` package from `non-free` installs the
-proprietary driver. Confirm the GPU is working after reboot:
+The `nvidia-driver` package from `non-free` installs the proprietary driver.
+Confirm the GPU is working after reboot:
 
 ```bash
 nvidia-smi
@@ -53,7 +57,7 @@ After install, open a new shell or source the profile:
 Enable flakes by creating `~/.config/nix/nix.conf`:
 
 ```
-experimental-features = nix command flakes
+experimental-features = nix-command flakes
 ```
 
 ---

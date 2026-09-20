@@ -9,12 +9,20 @@
       font-family = "${config.stylix.fonts.monospace.name}";
       font-size = 14;
 
-      background-opacity = 0.6; # 0.0 = fully transparent, 1.0 = fully opaque;
+      background-opacity = 0.9; # 0.0 = fully transparent, 1.0 = fully opaque;
       background-blur = false;
 
       window-padding-x = 10;
       window-padding-y = 10;
-      window-decoration = false;
+      # Let Marco (MATE's WM) draw the titlebar so the window can be moved,
+      # resized and snapped. "none" leaves an undecorated, immovable window.
+      window-decoration = "server";
+      gtk-titlebar = false; # no GTK client-side titlebar on top of Marco's
+      window-width = 120; # initial size in cells; also stops the tiny corner window
+      window-height = 35;
+      window-save-state = "never";
+      confirm-close-surface = false;
+      gtk-single-instance = false; # one process per window; avoids X11 focus/placement quirks
 
       shell-integration = "zsh";
 
@@ -25,23 +33,31 @@
 
       scrollback-limit = 100000;
 
+      # Standard base16 -> ANSI mapping (same as base16-shell / Stylix terminals).
+      # 0-15 are the ANSI colors, 16-21 hold the remaining base16 slots.
       palette = [
-        "0=#${config.lib.stylix.colors.base01}"
-        "1=#${config.lib.stylix.colors.base02}"
-        "2=#${config.lib.stylix.colors.base03}"
-        "3=#${config.lib.stylix.colors.base04}"
-        "4=#${config.lib.stylix.colors.base05}"
-        "5=#${config.lib.stylix.colors.base06}"
-        "6=#${config.lib.stylix.colors.base07}"
-        "7=#${config.lib.stylix.colors.base08}"
-        "8=#${config.lib.stylix.colors.base09}"
-        "9=#${config.lib.stylix.colors.base0A}"
+        "0=#${config.lib.stylix.colors.base00}"
+        "1=#${config.lib.stylix.colors.base08}"
+        "2=#${config.lib.stylix.colors.base0B}"
+        "3=#${config.lib.stylix.colors.base0A}"
+        "4=#${config.lib.stylix.colors.base0D}"
+        "5=#${config.lib.stylix.colors.base0E}"
+        "6=#${config.lib.stylix.colors.base0C}"
+        "7=#${config.lib.stylix.colors.base05}"
+        "8=#${config.lib.stylix.colors.base03}"
+        "9=#${config.lib.stylix.colors.base08}"
         "10=#${config.lib.stylix.colors.base0B}"
-        "11=#${config.lib.stylix.colors.base0C}"
+        "11=#${config.lib.stylix.colors.base0A}"
         "12=#${config.lib.stylix.colors.base0D}"
         "13=#${config.lib.stylix.colors.base0E}"
-        "14=#${config.lib.stylix.colors.base0F}"
-        "15=#${config.lib.stylix.colors.base05}"
+        "14=#${config.lib.stylix.colors.base0C}"
+        "15=#${config.lib.stylix.colors.base07}"
+        "16=#${config.lib.stylix.colors.base09}"
+        "17=#${config.lib.stylix.colors.base0F}"
+        "18=#${config.lib.stylix.colors.base01}"
+        "19=#${config.lib.stylix.colors.base02}"
+        "20=#${config.lib.stylix.colors.base04}"
+        "21=#${config.lib.stylix.colors.base06}"
       ];
     };
   };

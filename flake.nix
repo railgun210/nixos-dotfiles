@@ -50,6 +50,7 @@
           })
         ];
         config.allowUnfree = true;
+        config.nvidia.acceptLicense = true; # for targets.genericLinux.gpu.nvidia
       };
     in
     {

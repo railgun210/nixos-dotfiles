@@ -7,7 +7,6 @@
     gimp # Image editing
     krita # Digital painting
     xournalpp # Handwritten notes and Org-mode figures
-    libreoffice-qt6 # Office suite
     mate.atril # PDF reader
     picard # Music metadata editor
     prismlauncher # Minecraft launcher

@@ -114,14 +114,24 @@ info "Internet connectivity confirmed"
 # ── 3. Install Nix ───────────────────────────────────────────────────────────
 section "Installing Nix"
 
+NIX_DAEMON_PROFILE="/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
+
+# A previous run (or a fresh terminal) may have Nix installed but not on PATH
+if ! command -v nix &>/dev/null && [[ -f "$NIX_DAEMON_PROFILE" ]]; then
+    # shellcheck source=/dev/null
+    . "$NIX_DAEMON_PROFILE"
+fi
+
 if command -v nix &>/dev/null; then
     info "Nix already installed: $(nix --version)"
+elif [[ -d /nix/store ]]; then
+    die "/nix exists but 'nix' is not usable (is the nix-daemon running?).
+  Try: sudo systemctl restart nix-daemon
+  Then open a new terminal and re-run this script."
 else
     info "Running the Nix multi-user installer..."
     sh <(curl -L https://nixos.org/nix/install) --daemon < /dev/tty
 
-    # Source nix for the rest of this session
-    NIX_DAEMON_PROFILE="/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
     if [[ -f "$NIX_DAEMON_PROFILE" ]]; then
         # shellcheck source=/dev/null
         . "$NIX_DAEMON_PROFILE"
@@ -129,8 +139,7 @@ else
 
     if ! command -v nix &>/dev/null; then
         die "Nix was installed but 'nix' is not in PATH.
-  Try opening a new terminal and re-running this script from step 4 onwards,
-  or run: source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
+  Open a new terminal and re-run this script — it will pick up where it left off."
     fi
     info "Nix installed: $(nix --version)"
 fi
@@ -139,12 +148,18 @@ fi
 section "Enabling Nix flakes"
 
 NIX_CONF="$HOME/.config/nix/nix.conf"
-FLAKE_LINE="experimental-features = nix command flakes"
+FLAKE_LINE="experimental-features = nix-command flakes"
 
 mkdir -p "$(dirname "$NIX_CONF")"
 if grep -qxF "$FLAKE_LINE" "$NIX_CONF" 2>/dev/null; then
     info "Flakes already enabled in $NIX_CONF"
 else
+    # Drop any earlier experimental-features line (e.g. the old misspelled
+    # "nix command flakes") so we don't leave a broken one behind
+    if grep -q '^experimental-features' "$NIX_CONF" 2>/dev/null; then
+        sed -i '/^experimental-features/d' "$NIX_CONF"
+        warn "Replaced an existing experimental-features line in $NIX_CONF"
+    fi
     echo "$FLAKE_LINE" >> "$NIX_CONF"
     info "Flakes enabled in $NIX_CONF"
 fi
@@ -155,100 +170,182 @@ section "Setting up sops age key"
 AGE_KEY_DIR="/etc/sops/age"
 AGE_KEY_FILE="$AGE_KEY_DIR/keys.txt"
 
-if sudo test -f "$AGE_KEY_FILE" 2>/dev/null; then
-    info "Age key already exists at $AGE_KEY_FILE"
-else
-    echo ""
-    echo "The home-manager config uses SOPS to decrypt secrets (SSH keys, API keys, etc.)."
-    echo "You need to provide your age private key before the config can be applied."
+# An age secret key is "AGE-SECRET-KEY-1" + 58 bech32 characters (uppercase)
+AGE_KEY_REGEX='^AGE-SECRET-KEY-1[QPZRY9X8GF2TVDW0S3JN54KHCE6MUA7L]{58}$'
+
+# Clean up pasted text: drop terminal escape sequences (bracketed paste), CRs,
+# and all whitespace/quotes, then uppercase. One cleaned line per input line.
+normalize_age_lines() {
+    sed -E 's/\x1b\[[0-9;?]*[~A-Za-z]//g' | tr -d '\r' | sed -E "s/[[:space:]\"']//g" | tr 'a-z' 'A-Z'
+}
+
+# Print only the valid secret-key line(s) from stdin
+extract_age_keys() {
+    normalize_age_lines | grep -E "$AGE_KEY_REGEX" || true
+}
+
+# Explain (without echoing the secret) why the input was rejected
+diagnose_age_input() {
+    local text="$1" line len bad
+    if printf '%s\n' "$text" | normalize_age_lines | grep -q '^AGE1'; then
+        error "That is the PUBLIC key (age1...). Paste the private one: AGE-SECRET-KEY-1..."
+        return
+    fi
+    line="$(printf '%s\n' "$text" | normalize_age_lines | grep -m1 '^AGE-SECRET-KEY-' || true)"
+    if [[ -z "$line" ]]; then
+        error "No line starting with AGE-SECRET-KEY- was found in what was pasted."
+        return
+    fi
+    len=${#line}
+    bad="$(printf '%s' "${line#AGE-SECRET-KEY-1}" | tr -d 'QPZRY9X8GF2TVDW0S3JN54KHCE6MUA7L' | wc -c)"
+    error "Found a key line, but it is ${len} characters (expected 74) with ${bad} invalid character(s)."
+    echo "  The key was probably cut off, or extra text got pasted along with it."
+}
+
+# Ask the user for a key; sets AGE_KEY_CONTENT. Returns 1 if the input was invalid
+# so the caller can ask again instead of exiting.
+read_age_key() {
+    local method raw="" line path
     echo ""
     echo "How do you want to provide the age private key?"
     echo "  [1] Paste the key content here"
     echo "  [2] Provide the path to an existing key file"
     echo ""
-    prompt AGE_INPUT_METHOD "Enter choice" "1"
+    prompt method "Enter choice" "1"
 
-    AGE_KEY_CONTENT=""
-
-    case "$AGE_INPUT_METHOD" in
+    case "$method" in
         1)
             echo ""
-            echo "Paste your age private key below."
-            echo "It should look like: AGE-SECRET-KEY-1..."
-            echo "Press Enter then Ctrl+D when done."
+            echo "Paste your PRIVATE age key (AGE-SECRET-KEY-1..., not the age1... public key)."
+            echo "Input is hidden. Press Enter after pasting; an empty line finishes."
             echo ""
-            AGE_KEY_CONTENT="$(cat)"
+            while IFS= read -r -s line; do
+                [[ -z "$line" ]] && break
+                raw+="$line"$'\n'
+                # Stop as soon as a complete valid key has been pasted
+                printf '%s\n' "$line" | extract_age_keys | grep -q . && break
+            done
+            echo ""
             ;;
         2)
-            prompt AGE_KEY_PATH "Path to your age key file" ""
-            AGE_KEY_PATH="${AGE_KEY_PATH/#\~/$HOME}"
-            [[ -f "$AGE_KEY_PATH" ]] || die "File not found: $AGE_KEY_PATH"
-            AGE_KEY_CONTENT="$(cat "$AGE_KEY_PATH")"
+            prompt path "Path to your age key file" ""
+            path="${path/#\~/$HOME}"
+            if [[ ! -f "$path" ]]; then
+                error "File not found: $path"
+                return 1
+            fi
+            raw="$(cat "$path")"
             ;;
         *)
-            die "Invalid choice: $AGE_INPUT_METHOD"
+            error "Invalid choice: $method"
+            return 1
             ;;
     esac
 
-    # Basic validation
-    if ! echo "$AGE_KEY_CONTENT" | grep -q "^AGE-SECRET-KEY-"; then
-        die "The provided content does not look like an age private key.
-  Expected a line starting with 'AGE-SECRET-KEY-1...'
-  Double-check your key and re-run the script."
+    AGE_KEY_CONTENT="$(printf '%s\n' "$raw" | extract_age_keys)"
+    if [[ -z "$AGE_KEY_CONTENT" ]]; then
+        diagnose_age_input "$raw"
+        return 1
     fi
+    return 0
+}
 
-    # Write to /etc/sops/age/keys.txt
+need_key=1
+if sudo test -f "$AGE_KEY_FILE" 2>/dev/null; then
+    if sudo cat "$AGE_KEY_FILE" | extract_age_keys | grep -q .; then
+        info "Age key already exists at $AGE_KEY_FILE"
+        echo -en "${BOLD}Replace it with a different key? [y/N]: ${RESET}"
+        read -r REPLACE_KEY
+        [[ "$REPLACE_KEY" =~ ^[Yy]$ ]] || need_key=0
+    else
+        warn "$AGE_KEY_FILE exists but doesn't contain a valid age key — it will be replaced."
+    fi
+fi
+
+if [[ "$need_key" -eq 1 ]]; then
+    echo ""
+    echo "The home-manager config uses SOPS to decrypt secrets (SSH keys, API keys, etc.)."
+    echo "You need to provide your age private key before the config can be applied."
+
+    AGE_KEY_CONTENT=""
+    until read_age_key; do
+        echo -en "${BOLD}Try again? [Y/n]: ${RESET}"
+        read -r RETRY
+        [[ "$RETRY" =~ ^[Nn]$ ]] && die "Aborted — no valid age key provided."
+    done
+
     sudo mkdir -p "$AGE_KEY_DIR"
-    echo "$AGE_KEY_CONTENT" | sudo tee "$AGE_KEY_FILE" > /dev/null
+    printf '%s\n' "$AGE_KEY_CONTENT" | sudo tee "$AGE_KEY_FILE" > /dev/null
     sudo chmod 600 "$AGE_KEY_FILE"
-    sudo chown root:root "$AGE_KEY_FILE"
     info "Age key written to $AGE_KEY_FILE"
 fi
 
+# The sops-nix home-manager service runs as $CURRENT_USER (not root), so it must
+# be able to read the key. Fix this every run — it also repairs a key that was
+# saved as root-only (e.g. edited with sudo vim).
+sudo chown "$CURRENT_USER":"$(id -gn)" "$AGE_KEY_FILE"
+sudo chmod 600 "$AGE_KEY_FILE"
+info "Age key is owned by $CURRENT_USER (mode 600)"
+
+
 # ── 6. Clone dotfiles repo ────────────────────────────────────────────────────
-section "Cloning nixos-dotfiles (Debian branch)"
+section "nixos-dotfiles repo (Debian branch)"
 
-DEFAULT_REPO_PATH="$HOME/GitRepos/nixos-dotfiles"
-prompt REPO_PATH "Where should the repo be cloned?" "$DEFAULT_REPO_PATH"
-REPO_PATH="${REPO_PATH/#\~/$HOME}"
-
+REPO_PATH="$HOME/GitRepos/nixos-dotfiles"
 REPO_URL="https://github.com/railgun210/nixos-dotfiles"
 
 if [[ -d "$REPO_PATH/.git" ]]; then
-    EXISTING_REMOTE="$(git -C "$REPO_PATH" remote get-url origin 2>/dev/null || echo '')"
-    if [[ "$EXISTING_REMOTE" == "$REPO_URL" ]]; then
-        CURRENT_BRANCH="$(git -C "$REPO_PATH" branch --show-current)"
-        if [[ "$CURRENT_BRANCH" != "Debian" ]]; then
-            warn "Repo exists but is on branch '$CURRENT_BRANCH' — switching to Debian..."
-            git -C "$REPO_PATH" checkout Debian
-        fi
-        info "Repo already cloned at $REPO_PATH (Debian branch)"
-    else
-        die "A different git repo already exists at $REPO_PATH (remote: $EXISTING_REMOTE).
-  Remove it or choose a different path and re-run."
-    fi
+    info "Repo already cloned at $REPO_PATH — skipping clone"
 else
-    mkdir -p "$(dirname "$REPO_PATH")"
-    info "Cloning $REPO_URL ..."
-    git clone "$REPO_URL" "$REPO_PATH"
-    git -C "$REPO_PATH" checkout Debian
-    info "Cloned to $REPO_PATH"
+    echo -en "${BOLD}Do you need the repo cloned to $REPO_PATH? [Y/n]: ${RESET}"
+    read -r NEED_CLONE
+    if [[ "$NEED_CLONE" =~ ^[Nn]$ ]]; then
+        prompt REPO_PATH "Path to your existing nixos-dotfiles repo" "$REPO_PATH"
+        REPO_PATH="${REPO_PATH/#\~/$HOME}"
+        [[ -d "$REPO_PATH/.git" ]] || die "No git repo found at $REPO_PATH.
+  Re-run and answer 'y' to clone it, or give the correct path."
+        info "Using existing repo at $REPO_PATH"
+    else
+        mkdir -p "$(dirname "$REPO_PATH")"
+        info "Cloning $REPO_URL ..."
+        git clone "$REPO_URL" "$REPO_PATH"
+        info "Cloned to $REPO_PATH"
+    fi
 fi
+
+# Make sure we're on the Debian branch (don't crash if the user has local changes)
+CURRENT_BRANCH="$(git -C "$REPO_PATH" branch --show-current)"
+if [[ "$CURRENT_BRANCH" != "Debian" ]]; then
+    warn "Repo is on branch '$CURRENT_BRANCH' — switching to Debian..."
+    git -C "$REPO_PATH" checkout Debian \
+        || die "Could not switch to the Debian branch in $REPO_PATH (uncommitted changes?)."
+fi
+info "Repo ready at $REPO_PATH (Debian branch)"
 
 # ── 7. Apply home-manager config ──────────────────────────────────────────────
 section "Applying home-manager config"
 
 echo ""
-info "Running: nix run home-manager/release-25.11 -- switch --flake ${REPO_PATH}#railgun"
+# Existing dotfiles (e.g. ~/.config/mimeapps.list on a desktop install) would make
+# home-manager refuse with "would be clobbered". -b moves them aside instead; the
+# timestamp keeps a re-run from failing because an earlier backup already exists.
+BACKUP_EXT="hm-backup-$(date +%Y%m%d-%H%M%S)"
+
+info "Running: nix run home-manager/release-25.11 -- switch -b ${BACKUP_EXT} --flake ${REPO_PATH}#railgun"
 echo ""
 warn "This step downloads ~1 GB of packages on first run. Be patient."
 echo ""
 
-if ! nix run home-manager/release-25.11 -- switch --flake "${REPO_PATH}#railgun"; then
+if ! nix run home-manager/release-25.11 -- switch -b "$BACKUP_EXT" --flake "${REPO_PATH}#railgun"; then
     echo ""
-    error "home-manager switch failed. Common causes:"
-    echo "  • Age key is wrong or was for a different key recipient"
-    echo "    → Check $AGE_KEY_FILE and compare with the age recipient in secrets/secrets.yaml"
+    error "home-manager switch failed. Read the error above — common causes:"
+    echo "  • 'experimental Nix feature ... is disabled'"
+    echo "    → Check ~/.config/nix/nix.conf contains: experimental-features = nix-command flakes"
+    echo "  • sops / age errors (failed to decrypt, no identity matched, permission denied)"
+    echo "    → The key at $AGE_KEY_FILE is for a different recipient or unreadable."
+    echo "      Re-run and answer 'y' to \"Replace it with a different key?\""
+    echo "  • 'Existing file ... would be clobbered'"
+    echo "    → Move or delete the named file, then re-run (normally handled by -b backup)"
     echo "  • Network issue mid-download"
     echo "    → Re-run this script; it's idempotent"
     echo "  • Nix store permission issue"
@@ -257,6 +354,10 @@ if ! nix run home-manager/release-25.11 -- switch --flake "${REPO_PATH}#railgun"
 fi
 
 info "home-manager config applied successfully"
+if compgen -G "$HOME"/.*."$BACKUP_EXT" >/dev/null || compgen -G "$HOME"/.config/*."$BACKUP_EXT" >/dev/null; then
+    warn "Existing files were backed up with the .${BACKUP_EXT} suffix (e.g. ~/.config/mimeapps.list.${BACKUP_EXT})."
+    warn "Copy anything you still want out of them; they are safe to delete otherwise."
+fi
 
 # ── 8. Set zsh as default shell ───────────────────────────────────────────────
 section "Setting zsh as default shell"
@@ -284,7 +385,13 @@ echo -e "${GREEN}${BOLD}Everything is set up. Log out and back in for the new sh
 echo ""
 echo -e "${BOLD}Manual steps still needed:${RESET}"
 echo "  □  NVIDIA drivers (if applicable):"
-echo "       sudo apt install nvidia-driver firmware-misc-nonfree"
+echo "       Trixie only enables non-free-firmware, so enable contrib + non-free first:"
+echo "         sudo sed -i -E '/^deb/ s/ main non-free-firmware\$/ main contrib non-free non-free-firmware/' /etc/apt/sources.list"
+echo "         sudo apt update"
+echo "         sudo apt install linux-headers-amd64 nvidia-driver firmware-misc-nonfree"
+echo "  □  Nix GPU drivers (GUI apps from nix may not start without this):"
+echo "       home-manager printed a 'non-nixos-gpu-setup' command during the switch —"
+echo "       run that exact line with sudo. Re-running the script shows it again."
 echo "  □  PIA VPN client — not managed by nix:"
 echo "       Download from privateinternetaccess.com and install manually"
 echo "  □  MATE startup items:"
