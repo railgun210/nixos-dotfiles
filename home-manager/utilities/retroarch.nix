@@ -35,8 +35,8 @@
   # by the sops-nix user service, then seeded into retroarch.cfg below.
   sops = {
     age.keyFile = "/etc/sops/age/keys.txt";
-    secrets.retroachievements-username.sopsFile = ../../system/secrets/secrets.yaml;
-    secrets.retroachievements-password.sopsFile = ../../system/secrets/secrets.yaml;
+    secrets.retroachievements-username.sopsFile = ../../secrets/secrets.yaml;
+    secrets.retroachievements-password.sopsFile = ../../secrets/secrets.yaml;
   };
 
   home.activation = {

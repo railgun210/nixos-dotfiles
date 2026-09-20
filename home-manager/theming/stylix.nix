@@ -1,22 +1,11 @@
-{
-  pkgs,
-  osConfig,
-  ...
-}: {
+{pkgs, ...}: {
   config = {
     stylix = {
       enable = true;
 
-      # Home Manager is integrated into NixOS, so inherit the system Stylix
-      # wallpaper instead of declaring a second path here.
-      # The color scheme is generated via a genetic algorithm from the wallpaper image.
-      # Mustache templates can also be used to generate custom theme files — see base16.nix docs.
-      image = osConfig.stylix.image;
-      # values: "center", "stretch", "fill", "fit", "tile"
+      # Wallpaper is declared directly here; color scheme is generated from it.
+      image = ../wallpapers/still_wallpapers/wallhaven-jee8ry.jpg;
       imageScalingMode = "fit";
-
-      # base16Scheme is intentionally left unset so Stylix generates a color scheme from the wallpaper.
-      # base16Scheme = "${pkgs.base16-schemes}/share/themes/atelier-forest.yaml";
 
       polarity = "dark";
       opacity = {
@@ -43,50 +32,38 @@
       };
 
       targets = {
-        # Bemenu has a dedicated configuration module so its colors and scale
-        # are controlled explicitly instead of being merged with Stylix defaults.
+        # GTK is managed by MATE; Stylix must not touch it.
+        gtk.enable = false;
+
         bemenu.enable = false;
         dunst.enable = false;
-        gnome.enable = false;
         vesktop.enable = true;
 
         ghostty.enable = false;
         kitty.enable = true;
-        alacritty.enable = false; # alacritty is not installed
+        alacritty.enable = false;
 
         vscode.enable = false;
         neovide.enable = true;
         anki.enable = true;
 
-        # Stylix native engine hooks for Qt and KDE ecosystem apps
+        # Qt apps still pick up the palette.
         qt.enable = true;
-        kde.enable = true;
+        kde.enable = false;
 
-        waybar.enable = true;
-        hyprlock.enable = true;
+        # Wayland-only targets — not applicable on MATE/X11.
+        waybar.enable = false;
+        hyprlock.enable = false;
+
         neovim.enable = false;
       };
     };
 
-    # GTK widgets are themed by stylix.targets.gtk (its default theme, no
-    # custom theme derivation needed). Only the icon theme is set here.
-    gtk = {
-      enable = true;
-      iconTheme = {
-        package = pkgs.buuf-icon-theme;
-        name = "buuf-icon-theme";
-      };
-    };
-
-    dconf.settings."org/gnome/desktop/wm/preferences" = {
-      button-layout = "appmenu:none";
-    };
-
-    # Cursor theme
+    # X11 cursor only; MATE manages the GTK cursor via its own settings.
     home.pointerCursor = {
       enable = true;
-      gtk.enable = true;
-      x11.enable = false;
+      gtk.enable = false;
+      x11.enable = true;
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;
       size = 16;

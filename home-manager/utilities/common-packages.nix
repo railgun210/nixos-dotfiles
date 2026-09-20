@@ -51,7 +51,6 @@
 
     # System tools
     gparted
-    # hyprpolkitagent is launched by exec-once in hyprland/exec-once.nix — no need to also put it on PATH
   ];
 
 }

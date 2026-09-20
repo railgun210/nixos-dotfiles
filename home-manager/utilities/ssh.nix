@@ -4,11 +4,11 @@
   sops = {
     age.keyFile = "/etc/sops/age/keys.txt";
     secrets.github-ssh-key = {
-      sopsFile = ../../system/secrets/github-ssh-key.age;
+      sopsFile = ../../secrets/github-ssh-key.age;
       format = "binary";
     };
     secrets.github-ssh-key-pub = {
-      sopsFile = ../../system/secrets/github-ssh-key.pub;
+      sopsFile = ../../secrets/github-ssh-key.pub;
       format = "binary";
     };
   };

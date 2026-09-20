@@ -63,7 +63,7 @@ in {
   # never end up in the nix store.
   sops = {
     age.keyFile = "/etc/sops/age/keys.txt";
-    secrets.anki-username.sopsFile = ../../system/secrets/secrets.yaml;
-    secrets.anki-sync-key.sopsFile = ../../system/secrets/secrets.yaml;
+    secrets.anki-username.sopsFile = ../../secrets/secrets.yaml;
+    secrets.anki-sync-key.sopsFile = ../../secrets/secrets.yaml;
   };
 }
