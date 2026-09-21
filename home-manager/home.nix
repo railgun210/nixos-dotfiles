@@ -1,5 +1,5 @@
 # home-manager/home.nix
-# Standalone Home Manager configuration for Debian + MATE.
+# Standalone Home Manager configuration for Debian + GNOME (Wayland).
 # Apply with: home-manager switch --flake .#railgun
 {
   config,

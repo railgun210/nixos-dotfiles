@@ -1,7 +1,7 @@
 # Debian + Home Manager Setup
 
 This guide covers everything that cannot be managed by nix: installing Debian,
-setting up MATE, installing nix itself, and then wiring in home-manager so the
+setting up GNOME (Wayland, GDM), installing nix itself, and then wiring in home-manager so the
 rest of the configuration takes over.
 
 ---
@@ -9,8 +9,9 @@ rest of the configuration takes over.
 ## 1. Install Debian
 
 Boot the Debian installer. During software selection (tasksel), check
-**MATE desktop environment** and **standard system utilities**. Uncheck
-everything else unless you have a specific reason to include it.
+**standard system utilities** only; GNOME is installed by hand in section 7 so
+it can be kept minimal. (Checking **GNOME** here also works, but pulls in the
+full `gnome-core` app set.)
 
 After install, do a basic system update:
 
@@ -38,6 +39,23 @@ Confirm the GPU is working after reboot:
 
 ```bash
 nvidia-smi
+```
+
+### Enable DRM modesetting (required for GNOME on Wayland)
+
+Debian's NVIDIA packages leave `nvidia-drm` modesetting off, and GDM then
+silently falls back to Xorg. Turn it on and rebuild the initramfs:
+
+```bash
+echo 'options nvidia-drm modeset=1 fbdev=1' | sudo tee /etc/modprobe.d/nvidia-drm-modeset.conf
+sudo update-initramfs -u
+sudo reboot
+```
+
+After the reboot this must print `Y`:
+
+```bash
+sudo cat /sys/module/nvidia_drm/parameters/modeset
 ```
 
 ---
@@ -133,17 +151,36 @@ Log out and back in for the change to take effect.
 
 ---
 
-## 7. MATE configuration (manual)
+## 7. Install GNOME (GDM, Wayland)
 
-MATE is intentionally left unmanaged by nix. Configure these through the
-**MATE Control Center** and the panel right-click menu:
+Install a minimal GNOME Classic session plus the extensions the nix config
+enables. Choose **gdm3** if the installer asks which display manager to use:
 
-- **Panel layout** — add/remove applets, move/resize panels
-- **Keyboard shortcuts** — MATE's own shortcut system for window management
-- **Appearance** — GTK theme, icon theme, window borders, fonts in MATE apps
-- **Screensaver / lock screen** — MATE Screensaver settings
-- **Power management** — idle timeout, suspend behavior via MATE Power Manager
-- **Default apps** — MATE preferred applications dialog
+```bash
+sudo apt install \
+  gdm3 gnome-session gnome-classic gnome-shell-extensions \
+  gnome-shell-extension-appindicator gnome-shell-extension-desktop-icons-ng \
+  gnome-shell-extension-user-theme gnome-tweaks \
+  nautilus gnome-control-center gnome-terminal file-roller loupe papers \
+  gnome-system-monitor xdg-desktop-portal-gnome
+sudo systemctl enable gdm3
+```
+
+Run `sudo dpkg-reconfigure gdm3` if LightDM is still the active display
+manager, then reboot. At the GDM login screen click the gear icon and pick
+**GNOME Classic** (Wayland). After `home-manager switch` the extensions,
+icons, workspaces and font rendering are configured automatically.
+
+Optionally remove MATE and LightDM once GNOME works:
+
+```bash
+sudo apt purge lightdm lightdm-gtk-greeter
+sudo apt autoremove --purge
+```
+
+GNOME's own settings (keyboard shortcuts, power, lock screen) are managed in
+**GNOME Settings**; the pieces declared in
+`home-manager/desktops/gnome/default.nix` are re-applied on every switch.
 
 ---
 
@@ -159,22 +196,11 @@ sudo ./pia-linux-<version>.run
 
 ---
 
-## 9. Starting Polkit
+## 9. Login screen
 
-The nix config installs `polkit_gnome` as a polkit agent. You need to
-autostart it in your MATE session. In **MATE Session > Startup Programs**, add:
-
-```
-/run/current-system/sw/bin/...
-```
-
-Actually, since this is nix-managed, the binary path is:
-
-```bash
-$(which polkit-gnome-authentication-agent-1)
-```
-
-Add that to your MATE autostart applications list.
+GDM's greeter is GNOME Shell itself and is not themed by Stylix on Debian.
+Its wallpaper and colours stay at the Debian defaults unless changed manually
+for the `gdm` user.
 
 ---
 

@@ -112,9 +112,30 @@ in {
     fonts.fontconfig = {
       enable = true;
       antialiasing = true;
-      hinting = "full"; # other options include "medium" or "full"
-      subpixelRendering = "vertical-rgb"; # "rgb" for most monitors, "bgr" for some monitors
+      # Smooth text with subpixel rendering. "slight" keeps glyph shapes close
+      # to the font design ("none" is smoother still; "medium"/"full" snap to the
+      # pixel grid and look jagged). "rgb" is the standard horizontal subpixel
+      # order; the vertical-* values are only for rotated panels.
+      # Keep in sync with dconf "org/gnome/desktop/interface" in desktops/gnome/default.nix.
+      hinting = "slight";
+      subpixelRendering = "rgb";
       configFile = {
+        # Home Manager has no lcdfilter option. The default filter smooths
+        # subpixel colour fringing the most.
+        lcdfilter = {
+          enable = true;
+          label = "lcdfilter";
+          text = ''
+            <fontconfig>
+              <match target="font">
+                <edit name="lcdfilter" mode="assign">
+                  <const>lcddefault</const>
+                </edit>
+              </match>
+            </fontconfig>
+          '';
+        };
+
         # This is a custom fontconfig configuration that sets the default fonts for various categories.
         # It also enables bitmap fonts and sets some other options.
         status = {

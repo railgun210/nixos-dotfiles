@@ -14,15 +14,15 @@
 
       window-padding-x = 10;
       window-padding-y = 10;
-      # Let Marco (MATE's WM) draw the titlebar so the window can be moved,
-      # resized and snapped. "none" leaves an undecorated, immovable window.
-      window-decoration = "server";
-      gtk-titlebar = false; # no GTK client-side titlebar on top of Marco's
+      # GNOME/mutter has no server-side decorations, so let Ghostty draw its own
+      # libadwaita titlebar (window can be moved, resized and snapped).
+      window-decoration = "auto";
+      gtk-titlebar = true;
       window-width = 120; # initial size in cells; also stops the tiny corner window
       window-height = 35;
       window-save-state = "never";
       confirm-close-surface = false;
-      gtk-single-instance = false; # one process per window; avoids X11 focus/placement quirks
+      gtk-single-instance = false; # one process per window, so closing one window never affects another
 
       shell-integration = "zsh";
 

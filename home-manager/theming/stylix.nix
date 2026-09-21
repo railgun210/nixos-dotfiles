@@ -4,12 +4,12 @@
       enable = true;
 
       # Wallpaper is declared directly here; color scheme is generated from it.
-      image = ../wallpapers/still_wallpapers/wallhaven-jee8ry.jpg;
+      image = ../wallpapers/still_wallpapers/wallhaven-ogyeol.jpg;
       imageScalingMode = "fit";
 
       polarity = "dark";
       opacity = {
-        applications = 0.7;
+        applications = 0.8;
       };
 
       fonts = {
@@ -32,16 +32,12 @@
       };
 
       targets = {
-        # GTK is managed by MATE; Stylix must not touch it.
-        gtk.enable = false;
+        gtk.enable = true;
 
-        bemenu.enable = false;
-        dunst.enable = false;
         vesktop.enable = true;
 
         ghostty.enable = false;
         kitty.enable = true;
-        alacritty.enable = false;
 
         vscode.enable = false;
         neovide.enable = true;
@@ -50,19 +46,13 @@
         # Qt apps still pick up the palette.
         qt.enable = true;
         kde.enable = false;
-
-        # Wayland-only targets — not applicable on MATE/X11.
-        waybar.enable = false;
-        hyprlock.enable = false;
-
-        neovim.enable = false;
       };
     };
 
-    # X11 cursor only; MATE manages the GTK cursor via its own settings.
+    # GTK/GNOME (Wayland) and Xwayland apps all use this cursor.
     home.pointerCursor = {
       enable = true;
-      gtk.enable = false;
+      gtk.enable = true;
       x11.enable = true;
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;

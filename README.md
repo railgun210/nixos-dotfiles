@@ -1,9 +1,10 @@
 # railgun's Dotfiles — Debian + Home Manager
 
-This is a standalone **home-manager** configuration for Debian with MATE as
-the desktop environment. Everything user-level — shell, terminals, editors,
-development tools, GUI apps, theming — is declared in nix and applied with one
-command. MATE itself is installed and configured manually through Debian.
+This is a standalone **home-manager** configuration for Debian with GNOME
+(Wayland, GDM) as the desktop environment, themed to feel like MATE. Everything
+user-level — shell, terminals, editors, development tools, GUI apps, theming,
+and GNOME's settings (via dconf) — is declared in nix and applied with one
+command. GNOME, GDM and the shell extensions are installed through `apt`.
 
 > **Branch note:** This `Debian` branch targets standalone home-manager on
 > Debian. The `main` branch contains the original NixOS + Hyprland
@@ -19,24 +20,24 @@ command. MATE itself is installed and configured manually through Debian.
 | Terminals | Ghostty (primary), Kitty (backup) |
 | Editor | Doom Emacs + vanilla Neovim |
 | Browser | Floorp (Firefox fork) |
-| Theme engine | Stylix — generates color scheme from wallpaper, applies to terminals, Qt apps, Anki, etc. |
+| Theme engine | Stylix — generates color scheme from wallpaper, applies to GNOME, GTK, terminals, Qt apps, Anki, etc. |
+| Desktop settings | GNOME extensions, icons, workspaces and font rendering via `dconf.settings` |
 | Fonts | Terminess Nerd Font (mono), Overpass Nerd Font (sans), Tinos Nerd Font (serif) |
-| Notifications | MATE notification daemon (system) |
+| Notifications | GNOME Shell (system) |
 | Email | Thunderbird |
 | Dev tools | Rust, Python (uv), Node, C/C++, Nix LSP, Docker |
 | Secrets | SOPS-nix (encrypted with age) |
 | Backups | BorgBackup |
 | Emulation | RetroArch with cores |
 
-## What's managed by Debian/MATE
+## What's managed by Debian/GNOME
 
 | Category | Handled by |
 |----------|-----------|
-| Desktop session | MATE (installed via `apt`) |
-| Panel, applets | MATE Control Center |
-| GTK theming | MATE Appearance settings |
-| Screen lock | MATE Screensaver |
-| Power management | MATE Power Manager |
+| Desktop session | GNOME Classic on Wayland (installed via `apt`) |
+| Login screen | GDM |
+| GNOME Shell extensions | Installed via `apt`, enabled from nix |
+| Screen lock, power management | GNOME Settings |
 | Audio stack | PipeWire or PulseAudio via `apt` |
 | NVIDIA drivers | Debian non-free |
 | VPN | PIA official client |
@@ -112,8 +113,8 @@ nixos-dotfiles/
     │   └── zsh.nix                 # Zsh shell + Powerlevel10k
     │
     └── desktops/
-        └── mate/
-            └── default.nix         # Extra utilities that complement the MATE session
+        └── gnome/
+            └── default.nix         # GNOME dconf settings, extensions, Wayland env
 ```
 
 ---
@@ -139,7 +140,8 @@ something fast without starting a daemon.
 
 Stylix generates a 16-color base16 palette from the wallpaper declared in
 `home-manager/theming/stylix.nix` and applies it to: Kitty, Dunst, Qt apps,
-Anki, and Neovide. GTK theming is intentionally disabled — MATE controls that.
+Anki, and Neovide. GNOME's wallpaper, fonts and colour scheme come from
+Stylix's own GNOME target.
 
 Fonts are also declared in `stylix.nix`:
 
@@ -205,7 +207,7 @@ from sops and are seeded into the RetroArch config at activation.
 
 | Doc | What's in it |
 |-----|-------------|
-| [docs/debian-setup.md](docs/debian-setup.md) | Full Debian + nix + MATE install walkthrough |
+| [docs/debian-setup.md](docs/debian-setup.md) | Full Debian + nix + GNOME install walkthrough |
 | [docs/devshells.md](docs/devshells.md) | How to use the isolated dev environments |
 | [docs/secrets.md](docs/secrets.md) | SOPS age key setup on a new machine |
 | [docs/base16-reference.md](docs/base16-reference.md) | Base16 color slot reference for theming |

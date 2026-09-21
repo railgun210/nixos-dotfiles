@@ -2,6 +2,10 @@
 
 > **Status: implemented** — all steps below have been applied to the `Debian`
 > branch. This file remains as a reference for what changed and why.
+>
+> **Superseded:** the desktop later moved from MATE to GNOME (Wayland, GDM).
+> `desktops/mate/` no longer exists; see `desktops/gnome/default.nix` and
+> `docs/debian-setup.md`. MATE-specific notes below are historical.
 
 Convert this NixOS dotfiles repo into a standalone **home-manager** setup that
 runs on Debian with MATE as the desktop environment. MATE itself is installed
