@@ -9,7 +9,6 @@
     ./devshells
     ./development-tools.nix
     ./doom.nix
-    ./floorp.nix
     ./retroarch.nix
     ./ghostty.nix
     ./kitty.nix

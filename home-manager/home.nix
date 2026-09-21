@@ -41,7 +41,7 @@
         EDITOR = "emacsclient -a ''";
         VISUAL = "emacsclient -a ''";
         TERMINAL = "ghostty";
-        BROWSER = "floorp";
+        BROWSER = "firefox-esr"; # Debian's apt Firefox ESR
         NH_FLAKE = "${config.home.homeDirectory}/GitRepos/nixos-dotfiles";
       };
     };

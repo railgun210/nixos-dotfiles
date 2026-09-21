@@ -19,7 +19,7 @@ command. GNOME, GDM and the shell extensions are installed through `apt`.
 | Shell | Zsh + Oh-My-Zsh + Powerlevel10k |
 | Terminals | Ghostty (primary), Kitty (backup) |
 | Editor | Doom Emacs + vanilla Neovim |
-| Browser | Floorp (Firefox fork) |
+| Browser | Firefox ESR (from `apt`) |
 | Theme engine | Stylix — generates color scheme from wallpaper, applies to GNOME, GTK, terminals, Qt apps, Anki, etc. |
 | Desktop settings | GNOME extensions, icons, workspaces and font rendering via `dconf.settings` |
 | Fonts | Terminess Nerd Font (mono), Overpass Nerd Font (sans), Tinos Nerd Font (serif) |
@@ -103,7 +103,6 @@ nixos-dotfiles/
     │   ├── doom.nix                # Installs plain emacs (Doom managed manually)
     │   ├── ghostty.nix             # Primary terminal
     │   ├── kitty.nix               # Backup terminal
-    │   ├── floorp.nix              # Floorp browser config
     │   ├── vscode.nix              # VSCode with Everforest Dark theme
     │   ├── thunderbird.nix         # Email client
     │   ├── anki.nix                # Spaced repetition + AnkiWeb sync (via sops)

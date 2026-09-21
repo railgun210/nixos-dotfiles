@@ -9,9 +9,19 @@
 # target (see theming/stylix.nix), so they are not repeated here.
 {
   config,
+  lib,
   pkgs,
   ...
-}: {
+}: let
+  # Hyprland-style workspace keys: Super+1..9 and Super+0 (= workspace 10)
+  # switch, Super+Shift+<same key> moves the focused window there.
+  workspaceKeys = lib.listToAttrs (map (n: {
+    name = toString n;
+    value = if n == 10 then "0" else toString n;
+  }) (lib.range 1 10));
+
+  ghosttyBinding = "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty";
+in {
   home.packages = with pkgs; [
     # Wayland clipboard CLI (replaces xclip/xdotool from the MATE/X11 setup)
     wl-clipboard
@@ -39,6 +49,36 @@
   systemd.user.sessionVariables.NIXOS_OZONE_WL = "1";
 
   dconf.settings = {
+    "org/gnome/settings-daemon/plugins/media-keys" = {
+      # Super+T opens Ghostty (same as Hyprland).
+      custom-keybindings = [
+        "/${ghosttyBinding}/"
+      ];
+      home = ["<Shift><Super>e"]; # file manager
+      www = ["<Super>b"]; # web browser
+    };
+    ${ghosttyBinding} = {
+      name = "Ghostty";
+      command = "${config.programs.ghostty.package}/bin/ghostty";
+      binding = "<Super>t";
+    };
+
+    "org/gnome/desktop/wm/keybindings" = lib.mkMerge [
+      (lib.mapAttrs' (n: key: lib.nameValuePair "switch-to-workspace-${n}" ["<Super>${key}"]) workspaceKeys)
+      (lib.mapAttrs' (n: key: lib.nameValuePair "move-to-workspace-${n}" ["<Super><Shift>${key}"]) workspaceKeys)
+      {
+        close = ["<Super>q"];
+        panel-run-dialog = ["<Super>d"];
+      }
+    ];
+
+    # GNOME binds Super+1..9 to "launch the Nth dock favourite" by default,
+    # which would swallow the workspace keys above.
+    "org/gnome/shell/keybindings" = lib.mkMerge [
+      (lib.genAttrs (map (n: "switch-to-application-${toString n}") (lib.range 1 9)) (_: []))
+      {screenshot-window = ["<Shift><Super>s"];}
+    ];
+
     "org/gnome/shell" = {
       disable-user-extensions = false;
       # UUIDs come from the Debian gnome-shell-extension* packages. GNOME Classic
@@ -48,12 +88,19 @@
         "apps-menu@gnome-shell-extensions.gcampax.github.com"
         "places-menu@gnome-shell-extensions.gcampax.github.com"
         "window-list@gnome-shell-extensions.gcampax.github.com"
-        "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
         "launch-new-instance@gnome-shell-extensions.gcampax.github.com"
         "drive-menu@gnome-shell-extensions.gcampax.github.com"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "ubuntu-appindicators@ubuntu.com" # tray icons (Debian's AppIndicator package)
         "ding@rastersoft.com" # desktop icons
+      ];
+      # Extensions turned off by hand. Listed so Classic mode does not re-enable
+      # them; workspace-indicator is left out of enabled-extensions above for the
+      # same reason.
+      disabled-extensions = [
+        "system-monitor@gnome-shell-extensions.gcampax.github.com"
+        "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
+        "windowsNavigator@gnome-shell-extensions.gcampax.github.com"
       ];
     };
 
@@ -70,6 +117,7 @@
       cursor-size = config.home.pointerCursor.size;
       clock-show-date = true;
       enable-hot-corners = false; # MATE has no hot corner
+      text-scaling-factor = 1.7;
 
       # Smooth text with subpixel rendering. Keep in sync with
       # theming/font-settings.nix, which sets the same values for fontconfig.
@@ -81,8 +129,14 @@
     # Minimize/maximize/close on the right, no app-menu button.
     "org/gnome/desktop/wm/preferences" = {
       button-layout = ":minimize,maximize,close";
-      num-workspaces = 6; # same count as the MATE setup
+      num-workspaces = 10; # matches the Hyprland Super+1..0 setup
     };
+
+    # Alt+Tab only lists windows on the current workspace.
+    "org/gnome/shell/app-switcher".current-workspace-only = true;
+
+    # Night Light follows a manual schedule instead of sunrise/sunset.
+    "org/gnome/settings-daemon/plugins/color".night-light-schedule-automatic = false;
 
     "org/gnome/mutter" = {
       dynamic-workspaces = false; # fixed workspaces, like MATE's switcher
