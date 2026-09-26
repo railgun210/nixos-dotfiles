@@ -18,8 +18,8 @@
       # libadwaita titlebar (window can be moved, resized and snapped).
       window-decoration = "auto";
       gtk-titlebar = true;
-      window-width = 120; # initial size in cells; also stops the tiny corner window
-      window-height = 35;
+      window-width = 240; # initial size in cells; also stops the tiny corner window
+      window-height = 70;
       window-save-state = "never";
       confirm-close-surface = false;
       gtk-single-instance = false; # one process per window, so closing one window never affects another

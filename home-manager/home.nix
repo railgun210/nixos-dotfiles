@@ -28,6 +28,14 @@
       };
     };
 
+    # Flatpak's systemd env generator adds its export dirs to XDG_DATA_DIRS,
+    # but the Home Manager session vars clobber it, so Flatpak apps never
+    # reached the GNOME app grid/search. Add them here alongside genericLinux's.
+    xdg.systemDirs.data = [
+      "${config.home.homeDirectory}/.local/share/flatpak/exports/share"
+      "/var/lib/flatpak/exports/share"
+    ];
+
     home = {
       username = "railgun";
       homeDirectory = "/home/railgun";

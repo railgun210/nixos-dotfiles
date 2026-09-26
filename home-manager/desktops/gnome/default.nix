@@ -135,6 +135,14 @@ in {
     # Alt+Tab only lists windows on the current workspace.
     "org/gnome/shell/app-switcher".current-workspace-only = true;
 
+    # Nautilus opens new windows at this size (its default is 890x550, too
+    # small on the 4K screen). Nautilus overwrites it with the last closed
+    # window's size; Home Manager puts it back on each switch.
+    "org/gnome/nautilus/window-state" = {
+      initial-size = lib.hm.gvariant.mkTuple [1780 1100];
+      maximized = false;
+    };
+
     # Night Light follows a manual schedule instead of sunrise/sunset.
     "org/gnome/settings-daemon/plugins/color".night-light-schedule-automatic = false;
 

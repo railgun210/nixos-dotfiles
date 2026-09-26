@@ -80,7 +80,7 @@
       export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 
       # PATH additions
-      export PATH="$HOME/.local/bin:$PATH"
+      export PATH="$HOME/.local/bin:$HOME/.config/emacs/bin:$PATH"
 
       # Powerlevel10k config (must come after theme is sourced above)
       [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh

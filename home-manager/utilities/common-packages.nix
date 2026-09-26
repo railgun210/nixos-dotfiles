@@ -47,9 +47,6 @@
     # Fonts and themes
     calibre # Ebook management
     cozette # Custom font for status bars
-
-    # System tools
-    gparted
   ];
 
 }
