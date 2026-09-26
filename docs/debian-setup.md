@@ -30,11 +30,15 @@ On Debian 13 (Trixie) the installer only enables `non-free-firmware`, so
 ```bash
 sudo sed -i -E '/^deb/ s/ main non-free-firmware$/ main contrib non-free non-free-firmware/' /etc/apt/sources.list
 sudo apt update
-sudo apt install linux-headers-amd64 nvidia-driver firmware-misc-nonfree
+sudo apt install linux-headers-amd64 nvidia-driver nvidia-driver-libs:i386 firmware-misc-nonfree
 sudo reboot
 ```
 
 The `nvidia-driver` package from `non-free` installs the proprietary driver.
+`nvidia-driver-libs:i386` provides the 32-bit GL libraries that 32-bit Steam
+needs: the driver's `glx-diversions` moves Mesa's 32-bit `libGL.so.1` aside, so
+without it Steam dies with `steamui.so failed: libGL.so.1: wrong ELF class`.
+(Requires `sudo dpkg --add-architecture i386` first.)
 Confirm the GPU is working after reboot:
 
 ```bash

@@ -48,6 +48,40 @@ in {
   # Home Manager generates for XDG_DATA_DIRS.
   systemd.user.sessionVariables.NIXOS_OZONE_WL = "1";
 
+  # Monitor layout from Settings > Displays: the BenQ 4K at 60 Hz, scale 100%
+  # (text-scaling-factor below makes text readable instead of fractional
+  # scaling). GNOME replaces this file when display settings are changed, so
+  # force lets the next switch put it back instead of failing on the clash.
+  xdg.configFile."monitors.xml" = {
+    force = true;
+    text = ''
+      <monitors version="2">
+        <configuration>
+          <layoutmode>logical</layoutmode>
+          <logicalmonitor>
+            <x>0</x>
+            <y>0</y>
+            <scale>1</scale>
+            <primary>yes</primary>
+            <monitor>
+              <monitorspec>
+                <connector>DP-3</connector>
+                <vendor>BNQ</vendor>
+                <product>BenQ EW2880U</product>
+                <serial>ETA9P04314SL0</serial>
+              </monitorspec>
+              <mode>
+                <width>3840</width>
+                <height>2160</height>
+                <rate>59.997</rate>
+              </mode>
+            </monitor>
+          </logicalmonitor>
+        </configuration>
+      </monitors>
+    '';
+  };
+
   dconf.settings = {
     "org/gnome/settings-daemon/plugins/media-keys" = {
       # Super+T opens Ghostty (same as Hyprland).
