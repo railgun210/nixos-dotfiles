@@ -186,6 +186,23 @@ GNOME's own settings (keyboard shortcuts, power, lock screen) are managed in
 **GNOME Settings**; the pieces declared in
 `home-manager/desktops/gnome/default.nix` are re-applied on every switch.
 
+### Optional: i3 as a second session
+
+`home-manager/desktops/i3/` configures an i3 (X11) session next to GNOME. Only
+the pieces that need root live in apt: the GDM session entry, the PAM-backed
+screen locker and the compositor (which uses Debian's NVIDIA GL directly).
+
+```bash
+sudo apt install i3-wm i3lock xss-lock picom
+# optional: Bluetooth tray icon
+sudo apt install blueman
+```
+
+`mate-polkit` (polkit agent) and `network-manager-gnome` (nm-applet) are
+already installed. Everything else (dmenu, i3status, conky, dunst, feh, ...)
+comes from nix. At the GDM login screen click the gear icon and pick **i3**;
+GNOME stays the default and is not changed by the i3 module.
+
 ---
 
 ## 8. PIA VPN

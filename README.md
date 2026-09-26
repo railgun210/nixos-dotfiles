@@ -35,6 +35,7 @@ command. GNOME, GDM and the shell extensions are installed through `apt`.
 | Category | Handled by |
 |----------|-----------|
 | Desktop session | GNOME Classic on Wayland (installed via `apt`) |
+| Alternate session | i3 on X11 — `i3-wm`, `i3lock`, `xss-lock`, `picom` via `apt`; configs from nix |
 | Login screen | GDM |
 | GNOME Shell extensions | Installed via `apt`, enabled from nix |
 | Screen lock, power management | GNOME Settings |
@@ -111,9 +112,44 @@ nixos-dotfiles/
     │   └── zsh.nix                 # Zsh shell + Powerlevel10k
     │
     └── desktops/
-        └── gnome/
-            └── default.nix         # GNOME dconf settings, extensions, Wayland env
+        ├── gnome/
+        │   └── default.nix         # GNOME dconf settings, extensions, Wayland env
+        └── i3/                     # Alternate i3 (X11) session, see below
+            ├── i3.nix              # Keybindings, workspaces, autostart, i3bar
+            ├── i3status.nix        # Status line, Stylix colours
+            ├── dmenu.nix           # dmenu-themed, desktop-launcher, powermenu-dmenu
+            ├── picom.nix           # Compositor config (picom from apt)
+            ├── conky.nix           # System/weather panel (key from sops)
+            └── dunst.nix           # Notifications (Stylix colours)
 ```
+
+---
+
+## i3 session (alternate)
+
+GNOME stays the default desktop. Pick **i3** from the gear menu on GDM's
+login screen to get an X11 i3 session instead. It is themed from the same
+Stylix palette: window borders, the stock i3bar + i3status, dmenu, dunst and
+conky all recolour when `stylix.image` in `theming/stylix.nix` changes and
+`home-manager switch` runs (i3 reloads itself).
+
+| Key | Action |
+|-----|--------|
+| `Super+d` | App launcher (dmenu over .desktop files) |
+| `Super+t` / `Super+Enter` | Ghostty |
+| `Super+Shift+x` | Power menu (Shutdown / Restart / Suspend / Lock / Logout) |
+| `Super+x` | Lock (i3lock with the wallpaper) |
+| `Super+j/k/l/;` | Focus left/down/up/right (add Shift to move) |
+| `Super+1..0` | Workspaces 1–10 (add Shift to move the window) |
+| `Super+s` | Screenshot a region to the clipboard |
+| `Super+Shift+a` | Anki (same as GNOME) |
+| `Super+Shift+.` | Smile emoji picker (same as GNOME) |
+| `Super+Shift+[` / `]` | Move window to previous / next workspace |
+| `Super+q` | Close window |
+
+Needs `sudo apt install i3-wm i3lock xss-lock picom` (see
+[docs/debian-setup.md](docs/debian-setup.md)). Home Manager never sets
+`xsession.enable`, so nothing it writes is read by the GNOME session.
 
 ---
 

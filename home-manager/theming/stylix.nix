@@ -42,6 +42,13 @@
         vscode.enable = false;
         neovide.enable = true;
 
+        # i3 session (desktops/i3): window borders, i3bar and notifications.
+        # feh is started by i3 itself; Stylix's feh target only works through
+        # xsession.initExtra, which is left off so GNOME's Xorg path is untouched.
+        i3.enable = true;
+        dunst.enable = true;
+        feh.enable = false;
+
         # Qt apps still pick up the palette.
         qt.enable = true;
         kde.enable = false;

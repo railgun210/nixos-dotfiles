@@ -20,7 +20,10 @@
     value = if n == 10 then "0" else toString n;
   }) (lib.range 1 10));
 
-  ghosttyBinding = "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty";
+  customBinding = name: "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/${name}";
+  ghosttyBinding = customBinding "ghostty";
+  ankiBinding = customBinding "anki";
+  smileBinding = customBinding "smile";
 in {
   home.packages = with pkgs; [
     # Wayland clipboard CLI (replaces xclip/xdotool from the MATE/X11 setup)
@@ -87,6 +90,8 @@ in {
       # Super+T opens Ghostty (same as Hyprland).
       custom-keybindings = [
         "/${ghosttyBinding}/"
+        "/${ankiBinding}/"
+        "/${smileBinding}/"
       ];
       home = ["<Shift><Super>e"]; # file manager
       www = ["<Super>b"]; # web browser
@@ -95,6 +100,18 @@ in {
       name = "Ghostty";
       command = "${config.programs.ghostty.package}/bin/ghostty";
       binding = "<Super>t";
+    };
+    # Anki from /usr/local/bin (Anki's own installer, not apt or nix).
+    ${ankiBinding} = {
+      name = "Anki";
+      command = "anki";
+      binding = "<Shift><Super>a";
+    };
+    # Smile emoji picker (Flatpak).
+    ${smileBinding} = {
+      name = "Smile";
+      command = "flatpak run it.mijorus.smile";
+      binding = "<Shift><Super>period";
     };
 
     "org/gnome/desktop/wm/keybindings" = lib.mkMerge [
