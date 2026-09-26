@@ -20,7 +20,7 @@ command. GNOME, GDM and the shell extensions are installed through `apt`.
 | Terminals | Ghostty (primary), Kitty (backup) |
 | Editor | Doom Emacs + vanilla Neovim |
 | Browser | Firefox ESR (from `apt`) |
-| Theme engine | Stylix — generates color scheme from wallpaper, applies to GNOME, GTK, terminals, Qt apps, Anki, etc. |
+| Theme engine | Stylix — generates color scheme from wallpaper, applies to GNOME, GTK, terminals, Qt apps, etc. |
 | Desktop settings | GNOME extensions, icons, workspaces and font rendering via `dconf.settings` |
 | Fonts | Terminess Nerd Font (mono), Overpass Nerd Font (sans), Tinos Nerd Font (serif) |
 | Notifications | GNOME Shell (system) |
@@ -78,7 +78,7 @@ nixos-dotfiles/
 ├── scripts/
 │   └── bootstrap.sh                # Interactive Debian Trixie setup script
 ├── secrets/                        # SOPS-encrypted secrets (age keys)
-│   ├── secrets.yaml                # RetroAchievements + Anki credentials
+│   ├── secrets.yaml                # RetroAchievements + (unused) Anki credentials
 │   ├── github-ssh-key.age          # SSH private key
 │   └── github-ssh-key.pub          # SSH public key
 │
@@ -105,7 +105,6 @@ nixos-dotfiles/
     │   ├── kitty.nix               # Backup terminal
     │   ├── vscode.nix              # VSCode with Everforest Dark theme
     │   ├── thunderbird.nix         # Email client
-    │   ├── anki.nix                # Spaced repetition + AnkiWeb sync (via sops)
     │   ├── retroarch.nix           # RetroArch emulation + RetroAchievements
     │   ├── borg-backup.nix         # Automated backups
     │   ├── ssh.nix                 # SSH config + sops-managed GitHub key
@@ -139,7 +138,7 @@ something fast without starting a daemon.
 
 Stylix generates a 16-color base16 palette from the wallpaper declared in
 `home-manager/theming/stylix.nix` and applies it to: Kitty, Dunst, Qt apps,
-Anki, and Neovide. GNOME's wallpaper, fonts and colour scheme come from
+and Neovide. GNOME's wallpaper, fonts and colour scheme come from
 Stylix's own GNOME target.
 
 Fonts are also declared in `stylix.nix`:
@@ -173,7 +172,7 @@ See [docs/devshells.md](docs/devshells.md) for details.
 
 ## Secrets
 
-Secrets (SSH keys, AnkiWeb sync key, RetroAchievements credentials) are
+Secrets (SSH keys, RetroAchievements credentials) are
 encrypted with [SOPS](https://github.com/getsops/sops) using an age key. The
 encrypted files live in `secrets/` and are safe to commit.
 

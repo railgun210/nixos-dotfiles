@@ -2,7 +2,6 @@
 # Utilities shared across desktop configurations.
 {...}: {
   imports = [
-    ./anki.nix
     ./default-apps.nix
     ./borg-backup.nix
     ./common-packages.nix

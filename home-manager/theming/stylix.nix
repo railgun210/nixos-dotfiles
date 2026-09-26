@@ -41,7 +41,6 @@
 
         vscode.enable = false;
         neovide.enable = true;
-        anki.enable = true;
 
         # Qt apps still pick up the palette.
         qt.enable = true;

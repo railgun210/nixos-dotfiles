@@ -39,6 +39,8 @@
     yt-dlp # YouTube/m3u8 downloader
     fastfetch # System info
     base16-shell-preview # Base16 color scheme preview in terminal
+    sops # Edit secrets/secrets.yaml
+    age # Encryption backend for sops
 
     # Development
     docker_29 # At some point you'll have to manually switch this back to just Docker when it gets updated.
@@ -49,4 +51,6 @@
     cozette # Custom font for status bars
   ];
 
+  # Point sops at the age key sops-nix uses, instead of ~/.config/sops/age.
+  home.sessionVariables.SOPS_AGE_KEY_FILE = "/etc/sops/age/keys.txt";
 }
